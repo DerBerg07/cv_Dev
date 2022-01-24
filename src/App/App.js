@@ -133,6 +133,10 @@ class App {
     }
 
     setState(state){
+        if (this.state === state){
+            return
+        }
+        console.log(state);
         this.camera.setState(state, this.state);
         this.scene.setState(state, this.state);
         this.ui.setState(state, this.state);

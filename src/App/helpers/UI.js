@@ -47,33 +47,50 @@ class UI {
     }
 
     hideNameBanner(){
-       // this.hide(this.nameBanner);
         this.nameBanner.classList.add('hidden_banner')
     }
 
     showNameBanner(){
-        //this.show(this.nameBanner)
         this.nameBanner.classList.remove('hidden_banner')
     }
-
 
     setState(nextState, prevState){
 
         switch (nextState) {
-            case 'idle':
-                this.showNameBanner();
-                break
             case 'loading':
-                this.hideNameBanner();
-                this.show(this.loadingContainer);
+                this.setLoadingState();
                 break
+            case 'idle':
+                this.setIdleState();
+                break
+
         }
 
         switch (prevState) {
             case 'loading':
-                this.hide(this.loadingContainer);
+                this.endLoadingState();
+                break
+            case 'idle':
+                this.endIdleState();
                 break
         }
+    }
+
+    setLoadingState(){
+        this.hideNameBanner();
+        this.show(this.loadingContainer);
+    }
+
+    endLoadingState(){
+        this.hide(this.loadingContainer);
+    }
+
+    setIdleState(){
+        this.showNameBanner();
+    }
+
+    endIdleState(){
+        this.hideNameBanner();
     }
 }
 

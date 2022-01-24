@@ -1,18 +1,20 @@
 import * as THREE from 'three'
+import {InteractionManager} from "../helpers/InteractionManager";
+import {Tween} from "@tweenjs/tween.js";
+import {Vector3} from "three";
 
 class SceneContent extends THREE.Scene {
     constructor() {
         super()
-
+        this.interactionManager = null;
         this.background = '#ffffff'
         this.mixerAnimations = [];
-
         this.models = {};
-
         this.floor = null;
     }
 
     init() {
+        this.addInteraction();
         this.addGround();
         this.addBasicLight();
         this.startMainCharAnimation();
@@ -34,6 +36,10 @@ class SceneContent extends THREE.Scene {
         }
     }
 
+    addInteraction(){
+        this.interactionManager = new InteractionManager();
+    }
+
     addBasicLight() {
         const ambientLight = new THREE.AmbientLight('#929292', 0.5)
         this.add(ambientLight)
@@ -41,9 +47,8 @@ class SceneContent extends THREE.Scene {
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.shadow.mapSize.width = 2048;
         directionalLight.shadow.mapSize.height = 2048;
-
-        console.log(directionalLight.shadow);
         directionalLight.castShadow = true;
+        directionalLight.shadow.bias = -0.00005;
 
 
         directionalLight.position.set(-3, 10, 3)
@@ -85,26 +90,60 @@ class SceneContent extends THREE.Scene {
 
     diplomaAddControls(){
         const diploma  = this.getObjectByName('Diploma');
-        diploma.cursor = 'pointer';
-        diploma.on('click', ()=>{
+        diploma.defaultPosition = diploma.position;
+        diploma.defaultRotation = new THREE.Euler();
+        diploma.defaultRotation.copy(diploma.rotation);
+        diploma.interactive = true;
+        diploma.onMouseClick = ()=>{
             app.setState('education')
-            debugger
-        })
+        }
     }
 
     setState(nextState, prevState){
         switch (nextState) {
             case 'idle':
-
                 break
             case 'education':
-                this.goToEducation()
+                 this.setEducationState()
                 break;
         }
     }
 
-    goToEducation(){
-        debugger
+    setEducationState(){
+        const diploma  = this.getObjectByName('Diploma');
+        diploma.interactive = false;
+        const moveFromCupTween = new TWEEN.Tween(diploma.position)
+            .delay(500)
+            .to({z: diploma.defaultPosition.z - 0.3}, 500)
+            .onComplete(()=>{
+
+                const cameraPosition = new Vector3();
+                const cameraDirectionVector = app.camera.getWorldDirection(new Vector3());
+                cameraPosition.copy(app.camera.position);
+                cameraPosition.addScaledVector(cameraDirectionVector, 0.3)
+                const movetoCameraCupTween = new TWEEN.Tween(diploma.position).to(cameraPosition, 500)
+                    .start();
+
+                const lookAtParams = {
+                    x: diploma.position.x,
+                    y: diploma.position.y + 1,
+                    z: -diploma.position.z
+                }
+                const lookAtTargetParams = {
+                    x: app.camera.position.x,
+                    y: app.camera.position.y,
+                    z: app.camera.position.z,
+                }
+                const lookAtCameraTween = new TWEEN.Tween(lookAtParams).to(lookAtTargetParams, 500)
+                    .onUpdate(()=>{
+                        diploma.lookAt(...Object.values(lookAtParams))
+                    })
+                    .start();
+            }).start()
+    }
+
+    endEducationState(){
+
     }
 }
 
