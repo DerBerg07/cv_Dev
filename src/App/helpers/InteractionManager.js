@@ -21,39 +21,42 @@ class InteractionManager {
         this.addDomEventListeners()
     };
 
-    addDomEventListeners(){
+    addDomEventListeners() {
         document.addEventListener('mousemove', this.onMouseMove)
         document.addEventListener('click', this.onMouseClick)
     }
 
     onMouseMove = (event) => {
-        this.pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        this.pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
         this.reycaster.setFromCamera(this.pointer, app.camera);
 
-        const intersects = this.reycaster.intersectObjects( app.scene.children ) || [];
+        const intersects = this.reycaster.intersectObjects(app.scene.children) || [];
 
-        if ( intersects.length > 0 ) {
-            if ( this.targerObject !== intersects[0].object ) {
-                if ( this.targerObject ) {
-                    this.targerObject.material.emissive.setHex( this.targerObject.currentHex );
+        if (intersects.length > 0) {
+            if (this.targerObject !== intersects[0].object) {
+                if (this.targerObject) {
+                    this.targerObject.material.emissive.setHex(this.targerObject.currentHex);
                 }
                 this.targerObject = intersects[0].object;
-                if(this.targerObject.interactive){
+                if (this.targerObject.interactive) {
                     this.targerObject.currentHex = this.targerObject.material.emissive.getHex();
-                    this.targerObject.material.emissive.setHex( INTERACTION_COLOR );
+                    this.targerObject.material.emissive.setHex(INTERACTION_COLOR);
                 }
             }
         } else {
-            if ( this.targerObject && this.targerObject.interactive ) this.targerObject.material.emissive.setHex( this.targerObject.currentHex );
+            if (this.targerObject && this.targerObject.interactive) {
+                this.targerObject.material.emissive.setHex(this.targerObject.currentHex);
+            }
             this.targerObject = null;
         }
     }
 
-    onMouseClick= () =>{
-        if(this.targerObject && this.targerObject.interactive){
+    onMouseClick = () => {
+        if (this.targerObject && this.targerObject.interactive) {
             this.targerObject.onMouseClick();
+            this.targerObject.material.emissive.setHex(this.targerObject.currentHex);
         }
     }
 }

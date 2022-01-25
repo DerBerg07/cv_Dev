@@ -1,6 +1,7 @@
 const TEXT = {
     LOADING: "Loading",
-    NAME: 'OLEH HORA'
+    NAME: 'OLEH HORA',
+    EDUCATION: 'EDUCATION'
 }
 
 class UI {
@@ -8,6 +9,9 @@ class UI {
         this.uiContainer = this.getUiContainer();
         this.loadingContainer = this.createLoadingContainer();
         this.nameBanner = this.createNameBanner();
+        this.educationBanner = this.createEducationBanner();
+        this.backButton = this.createBackButton();
+        this.educationContent = this.createEducationContent();
     }
 
     getUiContainer() {
@@ -29,13 +33,50 @@ class UI {
     }
 
     createNameBanner(){
+        const nameBannerWrapper = document.createElement('div');
+        nameBannerWrapper.classList.add('banner')
+        nameBannerWrapper.id = 'name-banner';
+        this.hideBanner(nameBannerWrapper);
         const nameBanner = document.createElement('p');
+        nameBannerWrapper.appendChild(nameBanner)
         nameBanner.classList.add('text')
-        nameBanner.id = 'name-banner';
         nameBanner.innerHTML = TEXT.NAME;
 
-        this.uiContainer.appendChild(nameBanner)
-        return nameBanner
+        this.uiContainer.appendChild(nameBannerWrapper)
+        return nameBannerWrapper
+    }
+
+    createEducationBanner(){
+        const diplomaBannerWrapper = document.createElement('div');
+        diplomaBannerWrapper.classList.add('banner')
+        diplomaBannerWrapper.id = 'diploma-banner';
+        this.hideBanner(diplomaBannerWrapper);
+        const diplomaBanner = document.createElement('p');
+        diplomaBannerWrapper.appendChild(diplomaBanner);
+        diplomaBanner.classList.add('text')
+        diplomaBanner.classList.add('background-banner-label')
+        diplomaBanner.innerHTML = TEXT.EDUCATION;
+        this.uiContainer.appendChild(diplomaBannerWrapper)
+        return diplomaBannerWrapper
+    }
+
+    createEducationContent(){
+
+    }
+
+    createBackButton(){
+        const backButton = document.createElement('div');
+        backButton.id = 'back-button';
+        const backImage = document.createElement('img');
+        backImage.classList.add('back-image')
+        backImage.src = 'images/backArrow.png';
+        backButton.appendChild(backImage);
+        backButton.addEventListener('click', ()=>{
+            app.setState('idle');
+        })
+        this.uiContainer.appendChild(backButton);
+        backButton.classList.add('hidden_back-button');
+        return backButton;
     }
 
     hide(element) {
@@ -46,12 +87,20 @@ class UI {
         element.classList.remove('hidden');
     }
 
-    hideNameBanner(){
-        this.nameBanner.classList.add('hidden_banner')
+    hideBanner(banner){
+        banner.classList.add('hidden_banner')
     }
 
-    showNameBanner(){
-        this.nameBanner.classList.remove('hidden_banner')
+    showBanner(banner){
+        banner.classList.remove('hidden_banner')
+    }
+
+    hideBackButton(){
+        this.backButton.classList.add('hidden_back-button');
+    }
+
+    showBackButton(){
+        this.backButton.classList.remove('hidden_back-button');
     }
 
     setState(nextState, prevState){
@@ -62,6 +111,10 @@ class UI {
                 break
             case 'idle':
                 this.setIdleState();
+                this.hideBackButton();
+                break
+            case 'education':
+                this.showBanner(this.educationBanner)
                 break
 
         }
@@ -72,12 +125,15 @@ class UI {
                 break
             case 'idle':
                 this.endIdleState();
+                this.showBackButton();
+                break
+            case 'education':
+                this.hideBanner(this.educationBanner)
                 break
         }
     }
 
     setLoadingState(){
-        this.hideNameBanner();
         this.show(this.loadingContainer);
     }
 
@@ -86,11 +142,11 @@ class UI {
     }
 
     setIdleState(){
-        this.showNameBanner();
+        this.showBanner(this.nameBanner);
     }
 
     endIdleState(){
-        this.hideNameBanner();
+        this.hideBanner(this.nameBanner);
     }
 }
 

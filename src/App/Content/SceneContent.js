@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import {InteractionManager} from "../helpers/InteractionManager";
-import {Tween} from "@tweenjs/tween.js";
 import {Vector3} from "three";
+import Tween from "../helpers/Tween";
 
 class SceneContent extends THREE.Scene {
     constructor() {
@@ -10,12 +10,11 @@ class SceneContent extends THREE.Scene {
         this.background = '#ffffff'
         this.mixerAnimations = [];
         this.models = {};
-        this.floor = null;
     }
 
     init() {
         this.addInteraction();
-        this.addGround();
+        this.Floor();
         this.addBasicLight();
         this.startMainCharAnimation();
         this.addControls();
@@ -63,8 +62,8 @@ class SceneContent extends THREE.Scene {
         this.add(directionalLight)
     };
 
-    addGround() {
-        this.floor = new THREE.Mesh(
+    Floor() {
+        const floor = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10),
             new THREE.MeshStandardMaterial({
                 color: '#ffffff',
@@ -72,9 +71,10 @@ class SceneContent extends THREE.Scene {
                 roughness: 0.5
             })
         )
-        this.floor.receiveShadow = true
-        this.floor.rotation.x = -Math.PI * 0.5
-        this.add(this.floor)
+        floor.name = 'Floor';
+        floor.receiveShadow = true
+        floor.rotation.x = -Math.PI * 0.5
+        this.add(floor)
     }
 
     startMainCharAnimation() {
@@ -90,8 +90,11 @@ class SceneContent extends THREE.Scene {
 
     diplomaAddControls(){
         const diploma  = this.getObjectByName('Diploma');
-        diploma.defaultPosition = diploma.position;
+        diploma.defaultPosition = new THREE.Vector3();
+        diploma.defaultPosition.copy(diploma.position)
+        console.log('default pos', diploma.defaultPosition)
         diploma.defaultRotation = new THREE.Euler();
+        console.log(diploma.rotation);
         diploma.defaultRotation.copy(diploma.rotation);
         diploma.interactive = true;
         diploma.onMouseClick = ()=>{
@@ -107,26 +110,34 @@ class SceneContent extends THREE.Scene {
                  this.setEducationState()
                 break;
         }
+
+        switch (prevState) {
+            case 'idle':
+                break
+            case 'education':
+                this.endEducationState()
+                break;
+        }
     }
 
     setEducationState(){
         const diploma  = this.getObjectByName('Diploma');
         diploma.interactive = false;
-        const moveFromCupTween = new TWEEN.Tween(diploma.position)
-            .delay(500)
-            .to({z: diploma.defaultPosition.z - 0.3}, 500)
-            .onComplete(()=>{
-
+        Tween.get(diploma.position)
+            .wait(0.5)
+            .to({z: diploma.defaultPosition.z - 0.3}, 0.5)
+            .call(()=>{
                 const cameraPosition = new Vector3();
                 const cameraDirectionVector = app.camera.getWorldDirection(new Vector3());
                 cameraPosition.copy(app.camera.position);
-                cameraPosition.addScaledVector(cameraDirectionVector, 0.3)
-                const movetoCameraCupTween = new TWEEN.Tween(diploma.position).to(cameraPosition, 500)
-                    .start();
+                cameraPosition.addScaledVector(cameraDirectionVector, 0.4)
+                Tween.get(diploma.position)
+                    .to(cameraPosition, 0.5)
+
 
                 const lookAtParams = {
                     x: diploma.position.x,
-                    y: diploma.position.y + 1,
+                    y: diploma.position.y -1 ,
                     z: -diploma.position.z
                 }
                 const lookAtTargetParams = {
@@ -134,15 +145,39 @@ class SceneContent extends THREE.Scene {
                     y: app.camera.position.y,
                     z: app.camera.position.z,
                 }
-                const lookAtCameraTween = new TWEEN.Tween(lookAtParams).to(lookAtTargetParams, 500)
-                    .onUpdate(()=>{
+              Tween.get(lookAtParams).to(lookAtTargetParams, 0.5)
+                  .addEventListener('change', () => {
                         diploma.lookAt(...Object.values(lookAtParams))
                     })
-                    .start();
-            }).start()
+            })
     }
 
     endEducationState(){
+        const diploma  = this.getObjectByName('Diploma');
+        diploma.interactive = true;
+        const firstStepPosition = new Vector3().copy(diploma.defaultPosition)
+        firstStepPosition.z -= 0.3;
+        Tween.get(diploma.position, {override: true})
+            .to(firstStepPosition, 0.5)
+            .to(diploma.defaultPosition, 0.5)
+
+        const currentRotationParams = {
+            x: diploma.rotation.x,
+            y: diploma.rotation.y,
+            z: diploma.rotation.z,
+        }
+        console.log(Object.values(currentRotationParams));
+        const targetRotationParams  = {
+            x: diploma.defaultRotation.x,
+            y: diploma.defaultRotation.y,
+            z: -diploma.defaultRotation.z,
+        }
+        Tween.get(currentRotationParams,{override: true})
+            .to(targetRotationParams, 0.5)
+            .addEventListener('change', () => {
+                diploma.rotation.set(...Object.values(currentRotationParams).slice(0, 3), 'XYZ')
+            })
+
 
     }
 }

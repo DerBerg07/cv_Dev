@@ -1,8 +1,9 @@
 import * as THREE from 'three'
+import Tween from "./Tween";
 
 const CAMERA_POSITIONS = {
     idle: {
-        x: -2.8,
+        x: -2.9,
         y: 1.6,
         z: -0.4
     },
@@ -11,20 +12,21 @@ const CAMERA_POSITIONS = {
         y: 1.45,
         z: -0.45
     }
-
 }
+
+const IDLE_CAMERA_LOOK = new THREE.Vector3(0,0.7,0)
 
 class Camera extends THREE.PerspectiveCamera {
     constructor(cameraParams, scene) {
         super(...cameraParams);
         this.name = 'Camera'
         this.scene = scene;
-        this.lookVector = new THREE.Vector3(0, 0, 0);
+        this.lookVector = IDLE_CAMERA_LOOK;
     }
 
     init() {
         this.setDefaultPosition();
-        this.setCurrentLookVector(new THREE.Vector3(0, 1, 0))
+        this.setCurrentLookVector(IDLE_CAMERA_LOOK)
     }
 
     setDefaultPosition() {
@@ -42,7 +44,7 @@ class Camera extends THREE.PerspectiveCamera {
         this.setLook();
     }
 
-    setLook() {
+    setLook =() => {
         this.lookAt(this.lookVector)
     }
 
@@ -73,12 +75,17 @@ class Camera extends THREE.PerspectiveCamera {
     }
 
     setIdleState() {
-        const tween = new TWEEN.Tween(this.position)
-            .to(CAMERA_POSITIONS.idle, 1000)
-            .onUpdate(() => {
+        const tween = Tween.get(this.position, {override: true})
+            .to(CAMERA_POSITIONS.idle, 1)
+            .addEventListener('change', () => {
                 this.setLook()
             })
-            .start()
+
+        Tween.get(this.lookVector, {override: true})
+            .to(IDLE_CAMERA_LOOK, 1, Tween.Ease.cubicOut)
+            .addEventListener('change', () => {
+                this.setLook();
+            })
     }
 
     endIdleState() {
@@ -87,18 +94,14 @@ class Camera extends THREE.PerspectiveCamera {
 
     setEducationState() {
         const diploma = this.scene.getObjectByName('Diploma');
-        const cameraPositionTween = new TWEEN.Tween(this.position)
-            .to(CAMERA_POSITIONS.education, 500)
-            .easing(TWEEN.Easing.Exponential.Out);
+        Tween.get(this.position, {override: true})
+            .to(CAMERA_POSITIONS.education, 1, Tween.Ease.cubicOut)
 
-        const cameraLookAtEasing = new TWEEN.Tween(this.lookVector)
-            .to(diploma.position, 500)
-            .easing(TWEEN.Easing.Exponential.Out)
-            .onUpdate(()=>{
+       Tween.get(this.lookVector, {override: true})
+            .to(diploma.position, 1, Tween.Ease.cubicOut)
+           .addEventListener('change', () => {
                 this.setLook();
             })
-        cameraPositionTween.start();
-        cameraLookAtEasing.start();
     }
 
     endEducationState() {

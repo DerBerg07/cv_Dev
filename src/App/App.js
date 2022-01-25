@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import * as TWEEN from '@tweenjs/tween.js'
 import gsap from 'gsap'
 import * as dat from 'dat.gui'
 
@@ -7,6 +6,7 @@ import {Camera} from "./helpers/Camera";
 import {UI} from "./helpers/UI";
 import {Loader} from "./helpers/Loader";
 import {SceneContent} from "./Content/SceneContent";
+import Tween from "./helpers/Tween";
 
 const SCENE_BACKGROUND = '#ffffff'
 const SIZES = {
@@ -34,7 +34,6 @@ class App {
 
         this.addResizeListener();
         this.loader.loadFiles(this.callLoaderCallback);
-        this.createTween();
         this.startRender();
     };
 
@@ -65,7 +64,7 @@ class App {
     }
 
     createCamera(){
-        const camera = new Camera([75, SIZES.width / SIZES.height, 0.1, 100], this.scene)
+        const camera = new Camera([50, SIZES.width / SIZES.height, 0.1, 100], this.scene)
         this.scene.add(camera)
 
         return camera;
@@ -107,10 +106,6 @@ class App {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     };
 
-    createTween(){
-      global.TWEEN = TWEEN;
-    }
-
     startRender(){
         const clock = new THREE.Clock()
         let previousTime = 0
@@ -125,7 +120,7 @@ class App {
                     mixer.update(deltaTime)
                 })
             }
-            global.TWEEN.update()
+            Tween.tick(deltaTime, false);
             window.requestAnimationFrame(tick)
         }
 
