@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
-const INTERACTION_COLOR = 0xff0000;
+const INTERACTION_COLOR = 0x241a12;
+'#241a12'
 
 class InteractionManager {
     constructor() {
@@ -37,27 +38,64 @@ class InteractionManager {
         if (intersects.length > 0) {
             if (this.targerObject !== intersects[0].object) {
                 if (this.targerObject) {
-                    this.targerObject.material.emissive.setHex(this.targerObject.currentHex);
+                    if (this.targerObject.interactive) {
+                        this.removeTextureFromObject(this.targerObject);
+                    } else if (this.targerObject.parent?.interactive) {
+                        this.removeTextureFromParent(this.targerObject);
+                    }
                 }
+
                 this.targerObject = intersects[0].object;
                 if (this.targerObject.interactive) {
-                    this.targerObject.currentHex = this.targerObject.material.emissive.getHex();
-                    this.targerObject.material.emissive.setHex(INTERACTION_COLOR);
+                    this.addTextureToObject(this.targerObject)
+                } else if (this.targerObject.parent.interactive) {
+                    this.addTextureToParent(this.targerObject)
                 }
             }
         } else {
-            if (this.targerObject && this.targerObject.interactive) {
-                this.targerObject.material.emissive.setHex(this.targerObject.currentHex);
+            if (this.targerObject) {
+                if (this.targerObject.interactive) {
+                    this.removeTextureFromObject(this.targerObject);
+                } else if (this.targerObject.parent.interactive) {
+                    this.removeTextureFromParent(this.targerObject)
+                }
             }
             this.targerObject = null;
         }
     }
 
     onMouseClick = () => {
-        if (this.targerObject && this.targerObject.interactive) {
-            this.targerObject.onMouseClick();
-            this.targerObject.material.emissive.setHex(this.targerObject.currentHex);
+        if (this.targerObject) {
+            if(this.targerObject.interactive){
+                this.targerObject.onMouseClick();
+                this.removeTextureFromObject(this.targerObject)
+            }else if(this.targerObject.parent.interactive){
+                this.targerObject.parent.onMouseClick();
+                this.removeTextureFromParent(this.targerObject)
+            }
+
         }
+    }
+
+    addTextureToObject(object) {
+        object.currentHex = object.material.emissive.getHex();
+        object.material.emissive.setHex(INTERACTION_COLOR);
+    }
+
+    removeTextureFromObject(object) {
+        object.material.emissive.setHex(object.currentHex);
+    }
+
+    addTextureToParent(object) {
+        object.parent.children.forEach((child) => {
+            this.addTextureToObject(child)
+        })
+    }
+
+    removeTextureFromParent(object) {
+        object.parent.children.forEach((child) => {
+            this.removeTextureFromObject(child)
+        })
     }
 }
 

@@ -7,6 +7,7 @@ import {UI} from "./helpers/UI";
 import {Loader} from "./helpers/Loader";
 import {SceneContent} from "./Content/SceneContent";
 import Tween from "./helpers/Tween";
+import {StateController} from "./helpers/StateController";
 
 const SCENE_BACKGROUND = '#ffffff'
 const SIZES = {
@@ -22,21 +23,22 @@ class App {
         this.scene = null;
         this.camera = null;
         this.loader = null;
+        this.stateController = null;
         this.ui = null;
     }
 
-    init(){
+    init() {
         this.renderer = this.createRenderer();
         this.scene = this.createScene();
         this.camera = this.createCamera();
         this.loader = this.createLoader();
         this.ui = this.createUiManager();
+        this.stateController = this.createStateController();
 
         this.addResizeListener();
         this.loader.loadFiles(this.callLoaderCallback);
         this.startRender();
     };
-
 
     callLoaderCallback = (modelsArray) => {
         this.scene.addModels(modelsArray)
@@ -46,7 +48,7 @@ class App {
         this.camera.init();
     }
 
-    createRenderer(){
+    createRenderer() {
         const canvas = document.querySelector('canvas.webgl')
         const renderer = new THREE.WebGLRenderer({
             canvas: canvas,
@@ -63,60 +65,63 @@ class App {
         return renderer;
     }
 
-    createCamera(){
+    createCamera() {
         const camera = new Camera([50, SIZES.width / SIZES.height, 0.1, 100], this.scene)
         this.scene.add(camera)
 
         return camera;
     };
 
-    createScene(){
-       return new SceneContent();
+    createScene() {
+        return new SceneContent();
     };
 
-    createLoader(){
+    createLoader() {
         return new Loader();
     };
 
-    createUiManager(){
+    createUiManager() {
         return new UI();
     }
 
-    addResizeListener(){
-        window.addEventListener('resize', () =>
-        {
+    createStateController() {
+        return new StateController();
+    }
+
+    addResizeListener() {
+        window.addEventListener('resize', () => {
             this.updateSizes();
             this.updateCameraSizes();
             this.updateRendererSizes();
         })
     };
 
-    updateSizes(){
+    updateSizes() {
         SIZES.width = window.innerWidth
         SIZES.height = window.innerHeight
     };
 
-    updateCameraSizes(){
+    updateCameraSizes() {
         this.camera.aspect = SIZES.width / SIZES.height
         this.camera.updateProjectionMatrix()
     };
 
-    updateRendererSizes(){
+    updateRendererSizes() {
         this.renderer.setSize(SIZES.width, SIZES.height)
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     };
 
-    startRender(){
+    startRender() {
         const clock = new THREE.Clock()
         let previousTime = 0
 
-        const tick = () =>{
+        const tick = () => {
             const elapsedTime = clock.getElapsedTime()
             const deltaTime = elapsedTime - previousTime
             previousTime = elapsedTime;
             this.renderer.render(this.scene, this.camera)
-            if(this.scene.mixerAnimations.length){
-                this.scene.mixerAnimations.forEach(mixer =>{
+            if (this.scene.mixerAnimations.length) {
+                this.scene.mixerAnimations.forEach(mixer => {
                     mixer.update(deltaTime)
                 })
             }
@@ -127,16 +132,11 @@ class App {
         tick();
     }
 
-    setState(state){
-        if (this.state === state){
+    async setState(state) {
+        if (this.state === state) {
             return
         }
-        console.log(state);
-        this.camera.setState(state, this.state);
-        this.scene.setState(state, this.state);
-        this.ui.setState(state, this.state);
-
-
+        this.stateController.setState(state, this.state);
         this.state = state;
     }
 }
