@@ -79,46 +79,49 @@ class SceneContent extends THREE.Scene {
         this.add(ambientLight)
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.shadow.mapSize.width = 2048;
-        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.left = -1.5;
+        directionalLight.shadow.camera.right = 1.5;
+        directionalLight.shadow.camera.top = 1.5;
+        directionalLight.shadow.camera.bottom = -1.5;
+        directionalLight.shadow.mapSize.width = 512;
+        directionalLight.shadow.mapSize.height = 512;
         directionalLight.castShadow = true;
         directionalLight.shadow.bias = -0.00005;
 
-
         directionalLight.position.set(-3, 10, 3)
 
-        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.1);
-        directionalLight2.shadow.mapSize.width = 2048;
-        directionalLight2.shadow.mapSize.height = 2048;
-        directionalLight2.castShadow = true;
-        directionalLight2.shadow.bias = -0.00005;
-        directionalLight2.position.set(-6.6, 1.28, -1.15)
-
-        const pointLight = new THREE.PointLight( '#ffffff', 1.66, 1.8, 2.37 );
-        pointLight.shadow.mapSize.width = 2048;
-        pointLight.shadow.mapSize.height = 2048;
-        pointLight.castShadow = true;
-        pointLight.shadow.bias = -0.005;
-        pointLight.position.set( -0.3, 1.3, -1.1 );
+        this.add(directionalLight)
+        // const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.1);
+        // directionalLight2.shadow.mapSize.width = 2048;
+        // directionalLight2.shadow.mapSize.height = 2048;
+        // directionalLight2.castShadow = true;
+        // directionalLight2.shadow.bias = -0.00005;
+        // directionalLight2.position.set(-6.6, 1.28, -1.15)
+        //
+        // const pointLight = new THREE.PointLight( '#ffffff', 1.66, 1.8, 2.37 );
+        // pointLight.shadow.mapSize.width = 2048;
+        // pointLight.shadow.mapSize.height = 2048;
+        // pointLight.castShadow = true;
+        // pointLight.shadow.bias = -0.005;
+        // pointLight.position.set( -0.3, 1.3, -1.1 );
 
         //debug
         gui.addFolder('dirLight')
         gui.add(directionalLight.position, 'x', -15, 15, 0.02);
         gui.add(directionalLight.position, 'y', 0, 15, 0.02);
         gui.add(directionalLight.position, 'z', -15, 15, 0.02);
+        //
+        // gui.addFolder('pointLight')
+        // gui.add(pointLight.position, 'x', -3, 3, 0.02);
+        // gui.add(pointLight.position, 'y', 0, 3, 0.02);
+        // gui.add(pointLight.position, 'z', -3, 3, 0.02);
+        // gui.add(pointLight, 'intensity', -3, 3, 0.02);
+        // gui.add(pointLight, 'distance', -3, 3, 0.02);
+        // gui.add(pointLight, 'decay', 0, Math.PI*2, 0.01);
+        //
 
-        gui.addFolder('pointLight')
-        gui.add(pointLight.position, 'x', -3, 3, 0.02);
-        gui.add(pointLight.position, 'y', 0, 3, 0.02);
-        gui.add(pointLight.position, 'z', -3, 3, 0.02);
-        gui.add(pointLight, 'intensity', -3, 3, 0.02);
-        gui.add(pointLight, 'distance', -3, 3, 0.02);
-        gui.add(pointLight, 'decay', 0, Math.PI*2, 0.01);
-
-
-        this.add(directionalLight)
-        this.add(directionalLight2)
-        this.add( pointLight );
+        // this.add(directionalLight2)
+        // this.add( pointLight );
     };
 
     addLampLight(){
