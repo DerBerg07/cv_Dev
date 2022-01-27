@@ -19,13 +19,11 @@ class Loader {
         const resourcesArray =  Object.entries(resources);
         resourcesArray.forEach(([name, modelUrl], index) => {
             this.gltfLoader.load(`models/${modelUrl}`, (gltfModel)=>{
-                console.log(gltfModel);
                 loadedModels[name] = gltfModel;
                 if(index ===  resourcesArray.length - 1){
                     onLoadedCallback(loadedModels);
                 }
             }, (params)=>{{
-                console.log(params)
             }
             }, onErrorCallback);
         })
