@@ -8,12 +8,17 @@ import {Loader} from "./helpers/Loader";
 import {SceneContent} from "./Content/SceneContent";
 import Tween from "./helpers/Tween";
 import {StateController} from "./helpers/StateController";
+import * as Stats from 'stats.js'
 
 const SCENE_BACKGROUND = '#ffffff'
 const SIZES = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+
+let stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
 
 class App {
     constructor() {
@@ -52,14 +57,15 @@ class App {
         const canvas = document.querySelector('canvas.webgl')
         const renderer = new THREE.WebGLRenderer({
             canvas: canvas,
-            antialias: true
+            powerPreference: 'high-performance'
         })
         renderer.gammaOutput = true;
         renderer.gammaFactor = 1.5;
         renderer.shadowMap.enabled = true
         renderer.shadowMap.type = THREE.PCFSoftShadowMap
         renderer.setSize(SIZES.width, SIZES.height)
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        const pixelRatio = UI.isMobile() ? window.devicePixelRatio/2 : window.devicePixelRatio;
+        renderer.setPixelRatio(Math.min(pixelRatio, 2));
         renderer.antialias = true;
 
         return renderer;
@@ -116,6 +122,7 @@ class App {
         let previousTime = 0
 
         const tick = () => {
+            stats.begin()
             const elapsedTime = clock.getElapsedTime()
             const deltaTime = elapsedTime - previousTime
             previousTime = elapsedTime;
@@ -126,6 +133,8 @@ class App {
                 })
             }
             Tween.tick(deltaTime, false);
+
+            stats.end()
             window.requestAnimationFrame(tick)
         }
 
