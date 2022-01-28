@@ -57,16 +57,15 @@ class App {
         const canvas = document.querySelector('canvas.webgl')
         const renderer = new THREE.WebGLRenderer({
             canvas: canvas,
-            powerPreference: 'high-performance'
+            powerPreference: 'high-performance',
+            antialias: !UI.isMobile()
         })
         renderer.gammaOutput = true;
-        renderer.gammaFactor = 1.5;
+        gui.add(renderer, 'gammaFactor', -15, 15, 0.02);
         renderer.shadowMap.enabled = true
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap
         renderer.setSize(SIZES.width, SIZES.height)
-        const pixelRatio = UI.isMobile() ? window.devicePixelRatio/2 : window.devicePixelRatio;
+        const pixelRatio = UI.isMobile() ? window.devicePixelRatio/1.3 : window.devicePixelRatio;
         renderer.setPixelRatio(Math.min(pixelRatio, 2));
-        renderer.antialias = true;
 
         return renderer;
     }
@@ -114,7 +113,8 @@ class App {
 
     updateRendererSizes() {
         this.renderer.setSize(SIZES.width, SIZES.height)
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        const pixelRatio = UI.isMobile() ? window.devicePixelRatio/1.3 : window.devicePixelRatio;
+        this.renderer.setPixelRatio(Math.min(pixelRatio, 2))
     };
 
     startRender() {

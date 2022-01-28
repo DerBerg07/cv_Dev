@@ -9,23 +9,23 @@ class SceneContent extends THREE.Scene {
     constructor() {
         super()
         this.interactionManager = null;
-        this.shelfManager       = null;
-        this.background         = '#ffffff'
-        this.mixerAnimations    = [];
-        this.models             = {};
-        this.mashes             = [];
+        this.shelfManager = null;
+        this.background = '#ffffff'
+        this.mixerAnimations = [];
+        this.models = {};
+        this.mashes = [];
         this.interactionObjects = [];
     }
 
     init() {
         this.addInteraction();
         this.addFloor();
-        this.addShelf();
         this.addBasicLight();
         this.addLampLight();
         this.startMainCharAnimation();
         this.addControls();
         this.addDebugCube();
+        this.addShelf();
     }
 
     addModels(modelsObj) {
@@ -33,15 +33,15 @@ class SceneContent extends THREE.Scene {
             const model = modelsObj[modelName];
             model.scene.traverse(node => {
                 if (node.constructor.name === 'Object3D' || node.isMesh) {
-                    node.castShadow    = true;
+                    node.castShadow = true;
                     node.receiveShadow = true;
-                    node.defaultScale  = new Vector3().copy(node.scale);
+                    node.defaultScale = new Vector3().copy(node.scale);
                     this.mashes.push(node);
                 }
 
             })
             model.scene.gltfAnimation = model.animations;
-            this.models[modelName]    = model;
+            this.models[modelName] = model;
             this.add(model.scene);
         }
     }
@@ -77,23 +77,23 @@ class SceneContent extends THREE.Scene {
         const ambientLight = new THREE.AmbientLight('#929292', 0.7)
         this.add(ambientLight)
 
-        const directionalLight                 = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.shadow.camera.left    = -2;
-        directionalLight.shadow.camera.right   = 2;
-        directionalLight.shadow.camera.top     = 2.5;
-        directionalLight.shadow.camera.bottom  = -2;
-        directionalLight.shadow.mapSize.width  = 512;
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.shadow.camera.left = -2;
+        directionalLight.shadow.camera.right = 2;
+        directionalLight.shadow.camera.top = 2.5;
+        directionalLight.shadow.camera.bottom = -2;
+        directionalLight.shadow.mapSize.width = 512;
         directionalLight.shadow.mapSize.height = 512;
-        directionalLight.castShadow            = true;
-        directionalLight.shadow.bias           = -0.00005;
+        directionalLight.castShadow = true;
+        directionalLight.shadow.bias = -0.00005;
         directionalLight.position.set(-3, 10, 3)
         this.add(directionalLight)
 
         const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.2);
-        directionalLight2.shadow.camera.left    = -2;
-        directionalLight2.shadow.camera.right   = 2;
-        directionalLight2.shadow.camera.top     = 2;
-        directionalLight2.shadow.camera.bottom  = -2;
+        directionalLight2.shadow.camera.left = -2;
+        directionalLight2.shadow.camera.right = 2;
+        directionalLight2.shadow.camera.top = 2;
+        directionalLight2.shadow.camera.bottom = -2;
         directionalLight2.shadow.mapSize.width = 512;
         directionalLight2.shadow.mapSize.height = 512;
         directionalLight2.castShadow = true;
@@ -111,41 +111,41 @@ class SceneContent extends THREE.Scene {
     addLampLight() {
         const lampLight = new THREE.PointLight('#ff8c00', 10, 0.8, Math.PI / 2);
         lampLight.position.set(0.2, 1.38, 0.34)
-        lampLight.shadow.camera.left    = -1.5;
-        lampLight.shadow.camera.right   = 1.5;
-        lampLight.shadow.camera.top     = 1.5;
-        lampLight.shadow.camera.bottom  = -1.5;
-        lampLight.shadow.mapSize.width  = 512;
+        lampLight.shadow.camera.left = -1.5;
+        lampLight.shadow.camera.right = 1.5;
+        lampLight.shadow.camera.top = 1.5;
+        lampLight.shadow.camera.bottom = -1.5;
+        lampLight.shadow.mapSize.width = 512;
         lampLight.shadow.mapSize.height = 512;
-        lampLight.castShadow            = true;
-        lampLight.shadow.bias           = -0.005;
+        lampLight.castShadow = true;
+        lampLight.shadow.bias = -0.005;
 
         this.add(lampLight);
     }
 
     addFloor() {
-        const floor         = new THREE.Mesh(
+        const floor = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10),
             new THREE.MeshStandardMaterial({
-                color:     '#ffffff',
+                color: '#ffffff',
                 metalness: 0,
                 roughness: 0.5
             })
         )
-        floor.name          = 'Floor';
+        floor.name = 'Floor';
         floor.receiveShadow = true
-        floor.rotation.x    = -Math.PI * 0.5
+        floor.rotation.x = -Math.PI * 0.5
         this.add(floor)
     }
 
     addShelf() {
-        const shelfManager = new Shelf();
-
+        this.shelfManager = new Shelf();
+        this.shelfManager.init();
     };
 
     startMainCharAnimation() {
         const animationMixer = new THREE.AnimationMixer(this.models.mainCharacter.scene);
-        const action         = animationMixer.clipAction(this.models.mainCharacter.animations[0]);
+        const action = animationMixer.clipAction(this.models.mainCharacter.animations[0]);
         action.play();
         this.mixerAnimations.push(animationMixer)
     }
@@ -163,12 +163,10 @@ class SceneContent extends THREE.Scene {
     }
 
     diplomaAddControls() {
-        const diploma           = this.getObjectByName('Diploma');
-        diploma.defaultPosition = new THREE.Vector3();
-        diploma.defaultPosition.copy(diploma.position)
-        diploma.defaultRotation = new THREE.Euler();
-        diploma.defaultRotation.copy(diploma.rotation);
-        diploma.interactive  = true;
+        const diploma = this.getObjectByName('Diploma');
+        diploma.defaultPosition = new THREE.Vector3().copy(diploma.position);
+        diploma.defaultRotation = new THREE.Euler().copy(diploma.rotation);
+        diploma.interactive = true;
         diploma.onMouseClick = () => {
             app.setState('education')
         }
@@ -176,8 +174,8 @@ class SceneContent extends THREE.Scene {
     }
 
     addShelfControls() {
-        const shelf        = this.getObjectByName('Shelf');
-        shelf.interactive  = true;
+        const shelf = this.getObjectByName('Shelf');
+        shelf.interactive = true;
         shelf.onMouseClick = () => {
             app.setState('work_experience')
         }
@@ -185,8 +183,8 @@ class SceneContent extends THREE.Scene {
     }
 
     addAudioPlayerControls() {
-        const audioplayer        = this.getObjectByName('Audioplayer');
-        audioplayer.interactive  = true;
+        const audioplayer = this.getObjectByName('Audioplayer');
+        audioplayer.interactive = true;
         audioplayer.onMouseClick = () => {
             console.log('music');
         }
@@ -199,7 +197,7 @@ class SceneContent extends THREE.Scene {
     endLoadingState() {
         return new Promise(resolve => {
             Tween.get({}).wait(0.7).call(() => {
-             app.renderer.shadowMap.autoUpdate = false;
+                app.renderer.shadowMap.autoUpdate = false;
                 this.mashes.forEach(mesh => {
                     mesh.scale.set(0, 0, 0)
                 })
@@ -219,15 +217,14 @@ class SceneContent extends THREE.Scene {
 
     setEducationState() {
         return new Promise(resolve => {
-            const animationDuration = 0.5;
-            const diploma           = this.getObjectByName('Diploma');
+            const animationDuration = 0.4;
+            const diploma = this.getObjectByName('Diploma');
             Tween.get(diploma.position)
                 .wait(0.5)
                 .to({z: diploma.defaultPosition.z - 0.3}, animationDuration)
                 .call(() => {
-                    const cameraPosition        = new Vector3();
+                    const cameraPosition = new Vector3().copy(app.camera.position);
                     const cameraDirectionVector = app.camera.getWorldDirection(new Vector3());
-                    cameraPosition.copy(app.camera.position);
                     cameraPosition.addScaledVector(cameraDirectionVector, 0.4)
                     Tween.get(diploma.position)
                         .to(cameraPosition, animationDuration)
@@ -235,7 +232,7 @@ class SceneContent extends THREE.Scene {
                             resolve();
                         })
 
-                    const lookAtParams       = {
+                    const lookAtParams = {
                         x: diploma.position.x,
                         y: diploma.position.y - 1,
                         z: -diploma.position.z
@@ -255,10 +252,10 @@ class SceneContent extends THREE.Scene {
 
     endEducationState() {
         return new Promise(resolve => {
-            const animationDuration = 0.5;
-            const diploma           = this.getObjectByName('Diploma');
+            const animationDuration = 0.3;
+            const diploma = this.getObjectByName('Diploma');
             const firstStepPosition = new Vector3().copy(diploma.defaultPosition)
-            firstStepPosition.z -= 0.3;
+            firstStepPosition.z = -firstStepPosition.z;
             Tween.get(diploma.position, {override: true})
                 .to(firstStepPosition, animationDuration)
                 .to(diploma.defaultPosition, animationDuration)
@@ -266,34 +263,35 @@ class SceneContent extends THREE.Scene {
                     resolve();
                 })
 
-            const currentRotationParams = {
-                x: diploma.rotation.x,
-                y: diploma.rotation.y,
-                z: diploma.rotation.z,
-            }
-            const targetRotationParams  = {
-                x: diploma.defaultRotation.x,
-                y: diploma.defaultRotation.y,
-                z: -diploma.defaultRotation.z,
-            }
-            Tween.get(currentRotationParams, {override: true})
-                .to(targetRotationParams, animationDuration)
+            const targetRotationVector = new Vector3().copy(diploma.defaultRotation)
+            targetRotationVector.z = -targetRotationVector.z;
+
+            Tween.get(diploma.rotation, {override: true})
+                .to(targetRotationVector, animationDuration)
                 .addEventListener('change', () => {
-                    diploma.rotation.set(...Object.values(currentRotationParams).slice(0, 3), 'XYZ')
                 })
         })
     }
 
     setWorkExperienceState() {
+        return new Promise(resolve => {
+            this.shelfManager.startShelfScene()
+            resolve()
+        })
     }
 
     endWorkExperienceState() {
+        return new Promise(resolve => {
+            this.shelfManager.endShelfScene()
+            resolve()
+        })
     }
 
     addDebugCube() {
         const geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
         const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        const cube     = new THREE.Mesh(geometry, material);
+        const cube = new THREE.Mesh(geometry, material);
+        cube.name = 'Debug'
         this.add(cube);
 
         gui.addFolder('debugCube')

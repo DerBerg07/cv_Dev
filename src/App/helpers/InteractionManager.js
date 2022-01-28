@@ -66,14 +66,13 @@ class InteractionManager {
 
     onMouseClick = () => {
         if (this.targerObject) {
-            if(this.targerObject.interactive){
+            if(this.targerObject.interactive && this.targerObject.onMouseClick){
                 this.targerObject.onMouseClick();
                 this.removeTextureFromObject(this.targerObject)
-            }else if(this.targerObject.parent.interactive){
+            }else if(this.targerObject.parent.interactive && this.targerObject.parent.onMouseClick){
                 this.targerObject.parent.onMouseClick();
                 this.removeTextureFromParent(this.targerObject)
             }
-
         }
     }
 
