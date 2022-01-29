@@ -4,6 +4,8 @@ import Tween from "../helpers/Tween";
 
 import {InteractionManager} from "../helpers/InteractionManager";
 import {Shelf} from "./Shelf";
+import {AudioManager} from "../helpers/AudioManager";
+import {AnimationManager} from "../helpers/AnimationManager";
 
 class SceneContent extends THREE.Scene {
     constructor() {
@@ -11,20 +13,20 @@ class SceneContent extends THREE.Scene {
         this.interactionManager = null;
         this.shelfManager = null;
         this.background = '#ffffff'
-        this.mixerAnimations = [];
         this.models = {};
         this.mashes = [];
         this.interactionObjects = [];
+        this.audioManager = null;
+        this.animationManager =   this.addAnimation();
     }
 
     init() {
+        this.addAudio();
         this.addInteraction();
         this.addFloor();
         this.addBasicLight();
         this.addLampLight();
-        this.startMainCharAnimation();
         this.addControls();
-        this.addDebugCube();
         this.addShelf();
     }
 
@@ -38,16 +40,22 @@ class SceneContent extends THREE.Scene {
                     node.defaultScale = new Vector3().copy(node.scale);
                     this.mashes.push(node);
                 }
-
             })
-            model.scene.gltfAnimation = model.animations;
+            this.animationManager.addAnimations(model);
             this.models[modelName] = model;
             this.add(model.scene);
         }
     }
 
+    addAudio(){
+        this.audioManager = new AudioManager();
+    }
+
+    addAnimation(){
+        return  new AnimationManager();
+    }
+
     scaleBackMashes() {
-        console.log(this.models);
         this.mashes.forEach((mesh) => {
             const curParams = {
                 x: mesh.scale.x,
@@ -143,13 +151,6 @@ class SceneContent extends THREE.Scene {
         this.shelfManager.init();
     };
 
-    startMainCharAnimation() {
-        const animationMixer = new THREE.AnimationMixer(this.models.mainCharacter.scene);
-        const action = animationMixer.clipAction(this.models.mainCharacter.animations[0]);
-        action.play();
-        this.mixerAnimations.push(animationMixer)
-    }
-
     addControls() {
         this.diplomaAddControls();
         this.addShelfControls();
@@ -174,7 +175,6 @@ class SceneContent extends THREE.Scene {
     }
 
     addShelfControls() {
-        console.log(this)
         const shelf = this.getObjectByName('Shelf');
         shelf.interactive = true;
         shelf.onMouseClick = () => {
@@ -187,7 +187,7 @@ class SceneContent extends THREE.Scene {
         const audioplayer = this.getObjectByName('Audioplayer');
         audioplayer.interactive = true;
         audioplayer.onMouseClick = () => {
-            console.log('music');
+            this.animationManager.trigger(this.audioManager.triggerAudio());
         }
         this.interactionObjects.push(audioplayer);
     }
@@ -301,26 +301,6 @@ class SceneContent extends THREE.Scene {
             resolve()
         })
     }
-
-    addDebugCube() {
-        const geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
-        const material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        const cube = new THREE.Mesh(geometry, material);
-        cube.name = 'Debug'
-        this.add(cube);
-
-        gui.addFolder('debugCube')
-        gui.add(cube.position, 'x', -3, 3, 0.05).onChange(() => {
-            app.camera.setCurrentLookVector(cube.position);
-        })
-        gui.add(cube.position, 'y', 0, 2, 0.05).onChange(() => {
-            app.camera.setCurrentLookVector(cube.position);
-        })
-        gui.add(cube.position, 'z', -3, 3, 0.05).onChange(() => {
-            app.camera.setCurrentLookVector(cube.position);
-        })
-
-    };
 }
 
 export {SceneContent}

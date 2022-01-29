@@ -67,7 +67,7 @@ body {
 }
 
 #diploma-banner {
-    top: 3%;
+    top: 6%;
 }
 
 #work_experience-banner {
@@ -75,8 +75,6 @@ body {
 }
 
 .background-banner-label {
-    background-color: #efefef;
-    border: darkgray 1vmin solid;
     padding: 0 1vmin 0 1vmin;
 }
 
@@ -172,53 +170,50 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 50vw;
+    width: 55vw;
     overflow: hidden;
     transform: translate(-50%, -50%);
     transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    background-color: #363131;
+    padding: 2vmin;
 }
 
 .element-info .company_name {
-    font-size: 12vmin;
+    font-size: 5vmin;
     width: 25vw;
+    font-weight: 600;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: gray;
-    border: solid 1vmin #403e36;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 1vmin;
-    color: #403e36;
+    color: #ffffff;
+    /*text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;*/
 }
 
 .element-info .company_period {
     font-weight: 600;
     width: 30vw;
-    font-size: 5vmin;
+    font-size: 3vmin;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 1vmin;
-    background-color: gray;
-    border: solid 1vmin #403e36;
+    /*background-color: gray;*/
+    /*border: solid 1vmin #403e36;*/
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 1vmin;
-    color: rgb(62, 61, 57);
 }
 
 .element-info .company_tasks {
     width: 50vw;
     font-size: 3vmin;
-    background-color: gray;
-    border: solid 1vmin #403e36;
-    margin-top: 1vmin;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -237,16 +232,15 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     bottom: 3vmin;
-    background-color: gray;
-    z-index: 2;
-    border: darkgray 1vmin solid;
+    background-color: #282828;
+    z-index: 1;
+    border: darkgray 0.5vmin solid;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: bottom 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-    color: #403e36;
     font-size: 5vmin;
-    font-weight: 600;
+    font-weight: 400;
     padding: 1vmin;
 }
 
@@ -267,16 +261,15 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     top: 10vmin;
-    background-color: gray;
+    background-color: #282828;
     z-index: 1;
-    border: darkgray 1vmin solid;
+    border: darkgray 0.5vmin solid;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-    color: #403e36;
     font-size: 5vmin;
-    font-weight: 600;
+    font-weight: 400;
     padding: 1vmin;
 }
 
@@ -301,4 +294,5 @@ body {
     padding: 1vmin;
     border: darkgray 0.5vmin solid;
     background-color: #929292;
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }

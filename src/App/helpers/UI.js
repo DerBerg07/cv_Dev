@@ -30,14 +30,12 @@ const WORK_EXPERIENCE_TEXT = {
     TROPHIES: {
         'Qplaze': {
             period: '2019 - 2020 (0.9 year)',
-            tasks: 'Work on big game for social medias\n' +
-                'Technology stack : PIXI.JS, Redux, React, TweenJs, Gulp\n'+
+            tasks: 'Work on small arcade HTML5 games\n' +
+                'Technology stack : ES5, Construct 2, different Tween libraries\n' +
                 'Usual tasks:\n' +
-                '- Create new modules.\n' +
-                '- Refactor code.\n' +
-                '- Implement new technologies to project.\n' +
-                '- Create React.js-based middleware for Unity game project.\n' +
-                '- Support and bug fixes on project.'
+                '- Fixing bugs for customers\n' +
+                '- Port games for new platforms\n' +
+                '- Development for mobile devices.'
         },
         'Ejaw': {
             period: '2029 - 2021 (1 year)',
@@ -50,12 +48,14 @@ const WORK_EXPERIENCE_TEXT = {
         },
         'Evoplay': {
             period: '2021 - 2022 (1.3 year)',
-            tasks: 'Work on small arcade HTML5 games\n' +
-                'Technology stack : ES5, Construct 2, different Tween libraries\n' +
+            tasks: 'Work on big game for social medias\n' +
+                'Technology stack : PIXI.JS, Redux, React, TweenJs, Gulp\n'+
                 'Usual tasks:\n' +
-                '- Fixing bugs for customers\n' +
-                '- Port games for new platforms\n' +
-                '- Development for mobile devices.'
+                '- Create new modules.\n' +
+                '- Refactor code.\n' +
+                '- Implement new technologies to project.\n' +
+                '- Create React.js-based middleware for Unity game project.\n' +
+                '- Support and bug fixes on project.',
         }
     }
 }
@@ -361,7 +361,7 @@ class UI {
         companyTasks.innerHTML = this.prepareTextForInnerHtml(WORK_EXPERIENCE_TEXT.TROPHIES[name].tasks);
         infoElement.appendChild(companyTasks)
 
-        const pivotCorrection = new Vector3(0, 0.1, 0)
+        const pivotCorrection = new Vector3(0, 0, 0)
         this.addHtmlLabelToObject(trophyObject, infoElement, pivotCorrection);
     }
 

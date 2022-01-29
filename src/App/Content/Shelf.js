@@ -166,8 +166,6 @@ class Shelf {
         this.setInteractiveFrames(false);
     }
 
-
-
 }
 
 export {Shelf}
