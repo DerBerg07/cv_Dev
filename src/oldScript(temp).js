@@ -25,7 +25,7 @@ let mixer;
 
 const gltfLoader = new GLTFLoader();
 gltfLoader.load(
-    'models/Chel/chel.glb',
+    'trophies/Chel/chel.glb',
     (gltf)=>{
         console.log(gltf);
         scene.add( gltf.scene );

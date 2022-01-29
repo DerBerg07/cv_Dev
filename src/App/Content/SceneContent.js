@@ -174,6 +174,7 @@ class SceneContent extends THREE.Scene {
     }
 
     addShelfControls() {
+        console.log(this)
         const shelf = this.getObjectByName('Shelf');
         shelf.interactive = true;
         shelf.onMouseClick = () => {
@@ -275,14 +276,28 @@ class SceneContent extends THREE.Scene {
 
     setWorkExperienceState() {
         return new Promise(resolve => {
-            this.shelfManager.startShelfScene()
+            this.shelfManager.startShelfTrophyScene();
             resolve()
         })
     }
 
     endWorkExperienceState() {
         return new Promise(resolve => {
-            this.shelfManager.endShelfScene()
+            this.shelfManager.endShelfTrophyScene();
+            resolve()
+        })
+    }
+
+    setStateHardSkills() {
+        return new Promise((resolve, reject) => {
+            this.shelfManager.startShelfFrameScene()
+            resolve()
+        })
+    }
+
+    endStateHardSkills() {
+        return new Promise((resolve, reject) => {
+            this.shelfManager.endShelfFrameScene()
             resolve()
         })
     }

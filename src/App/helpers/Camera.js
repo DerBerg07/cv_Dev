@@ -17,6 +17,11 @@ const CAMERA_POSITIONS = {
         x: -0.54,
         y: 1.26,
         z: -0.94
+    },
+    hardSkills: {
+        x: -0.54,
+        y: 1,
+        z: -0.94
     }
 }
 
@@ -152,6 +157,31 @@ class Camera extends THREE.PerspectiveCamera {
     }
 
     endWorkExperienceState() {
+    }
+
+    setStateHardSkills(){
+        return new Promise((resolve, reject) => {
+            const animationDuration = 1;
+            const shelf = this.scene.getObjectByName('Shelf');
+            Tween.get(this.position, {override: true})
+                .to(CAMERA_POSITIONS.hardSkills, animationDuration, Tween.Ease.cubicOut)
+
+            const targetLook = new Vector3().copy(shelf.position)
+            targetLook.y += 0.9;
+
+            Tween.get(this.lookVector, {override: true})
+                .to(targetLook, animationDuration, Tween.Ease.cubicOut)
+                .call(() => {
+                    resolve();
+                })
+                .addEventListener('change', () => {
+                    this.setLook();
+                })
+        })
+    }
+
+    endStateHardSkills(){
+        return new Promise((resolve, reject) => {resolve()})
     }
 }
 

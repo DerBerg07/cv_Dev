@@ -53,7 +53,7 @@ body {
     font-weight: 600;
     font-size: 10vmin;
     width: 100%;
-    z-index: 1;
+    z-index: 3;
     transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -62,7 +62,7 @@ body {
     transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1) 1s;
 }
 
-#name-banner .hidden_banner{
+#name-banner .hidden_banner {
     transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1) 1s;
 }
 
@@ -82,7 +82,7 @@ body {
 
 .hidden_banner {
     top: -15vmin !important;
-    transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1)!important;
+    transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
 #back-button {
@@ -92,7 +92,7 @@ body {
     left: 3vmin;
     top: 3vmin;
     background-color: gray;
-    z-index: 2;
+    z-index: 10;
     border: darkgray 1vmin solid;
     transition: left 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
@@ -164,4 +164,141 @@ body {
 .title-education h3 {
     font-size: 3vmin;
     color: #403e36;
+}
+
+.element-info {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50vw;
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.element-info .company_name {
+    font-size: 12vmin;
+    width: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    border: solid 1vmin #403e36;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 1vmin;
+    color: #403e36;
+}
+
+.element-info .company_period {
+    font-weight: 600;
+    width: 30vw;
+    font-size: 5vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1vmin;
+    background-color: gray;
+    border: solid 1vmin #403e36;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 1vmin;
+    color: rgb(62, 61, 57);
+}
+
+.element-info .company_tasks {
+    width: 50vw;
+    font-size: 3vmin;
+    background-color: gray;
+    border: solid 1vmin #403e36;
+    margin-top: 1vmin;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 1vmin;
+    color: #cbc5b6;
+}
+
+.element-info-hidden {
+    width: 0;
+    border: none !important;
+    padding: 0 !important;
+}
+
+#hard_skills-button {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    bottom: 3vmin;
+    background-color: gray;
+    z-index: 2;
+    border: darkgray 1vmin solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: bottom 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    color: #403e36;
+    font-size: 5vmin;
+    font-weight: 600;
+    padding: 1vmin;
+}
+
+#hard_skills-button:hover {
+    background-color: #929292;
+}
+
+#hard_skills-button:active {
+    transform: translate(-50%, -50%) scale(0.9) ;
+}
+
+.hidden_hard_skills-button{
+    bottom: -20vmin !important;
+}
+
+#work_experience-button {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 10vmin;
+    background-color: gray;
+    z-index: 1;
+    border: darkgray 1vmin solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: top 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    color: #403e36;
+    font-size: 5vmin;
+    font-weight: 600;
+    padding: 1vmin;
+}
+
+#work_experience-button:hover {
+    background-color: #929292;
+}
+
+#work_experience-button:active {
+    transform: translate(-50%, -50%) scale(0.9) ;
+}
+
+.hidden_work_experience-button{
+    top: -20vmin !important;
+}
+
+.label-frame{
+    color: #363131;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    font-size: 4vmin;
+    padding: 1vmin;
+    border: darkgray 0.5vmin solid;
+    background-color: #929292;
 }

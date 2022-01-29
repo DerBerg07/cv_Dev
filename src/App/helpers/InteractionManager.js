@@ -1,7 +1,7 @@
 import * as THREE from 'three'
+import {Color} from "three";
 
 const INTERACTION_COLOR = 0x241a12;
-'#241a12'
 
 class InteractionManager {
     constructor() {
@@ -30,71 +30,79 @@ class InteractionManager {
     onMouseMove = (event) => {
         this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
         this.reycaster.setFromCamera(this.pointer, app.camera);
 
         const intersects = this.reycaster.intersectObjects(app.scene.children) || [];
-
         if (intersects.length > 0) {
-            if (this.targerObject !== intersects[0].object) {
-                if (this.targerObject) {
-                    if (this.targerObject.interactive) {
-                        this.removeTextureFromObject(this.targerObject);
-                    } else if (this.targerObject.parent?.interactive) {
-                        this.removeTextureFromParent(this.targerObject);
-                    }
-                }
-
-                this.targerObject = intersects[0].object;
-                if (this.targerObject.interactive) {
-                    this.addTextureToObject(this.targerObject)
-                } else if (this.targerObject.parent.interactive) {
-                    this.addTextureToParent(this.targerObject)
-                }
+            const interactionObject = this.findInteractiveParent(intersects[0].object);
+            if (this.targerObject !== interactionObject) {
+                this.onHoverOut(this.targerObject);
+                this.targerObject = interactionObject;
+                this.onHoverIn(this.targerObject)
             }
         } else {
-            if (this.targerObject) {
-                if (this.targerObject.interactive) {
-                    this.removeTextureFromObject(this.targerObject);
-                } else if (this.targerObject.parent.interactive) {
-                    this.removeTextureFromParent(this.targerObject)
-                }
-            }
+            this.onHoverOut(this.targerObject);
             this.targerObject = null;
         }
     }
 
     onMouseClick = () => {
         if (this.targerObject) {
-            if(this.targerObject.interactive && this.targerObject.onMouseClick){
+            if (this.targerObject.interactive && this.targerObject.onMouseClick) {
                 this.targerObject.onMouseClick();
                 this.removeTextureFromObject(this.targerObject)
-            }else if(this.targerObject.parent.interactive && this.targerObject.parent.onMouseClick){
+            } else if (this.targerObject.parent.interactive && this.targerObject.parent.onMouseClick) {
                 this.targerObject.parent.onMouseClick();
                 this.removeTextureFromParent(this.targerObject)
             }
         }
     }
 
+    onHoverIn(object) {
+        if (!object) {
+            return
+        }
+        this.addTextureToObject(object);
+        if (object.onHoverIn) {
+            object.onHoverIn();
+        }
+    }
+
+    onHoverOut(object) {
+        if (!object) {
+            return
+        }
+        this.removeTextureFromObject(object);
+        if (object.onHoverOut) {
+            object.onHoverOut();
+        }
+    }
+
     addTextureToObject(object) {
-        object.currentHex = object.material.emissive.getHex();
-        object.material.emissive.setHex(INTERACTION_COLOR);
-    }
-
-    removeTextureFromObject(object) {
-        object.material.emissive.setHex(object.currentHex);
-    }
-
-    addTextureToParent(object) {
-        object.parent.children.forEach((child) => {
+        object.currentHex = new Color(object.material?.emissive?.getHex());
+        object.material?.emissive?.setHex(INTERACTION_COLOR);
+        object.children.forEach((child) => {
             this.addTextureToObject(child)
         })
     }
 
-    removeTextureFromParent(object) {
-        object.parent.children.forEach((child) => {
-            this.removeTextureFromObject(child)
+    removeTextureFromObject(object) {
+        object.material?.emissive?.setHex(object.currentHex);
+        object.children.forEach((child) => {
+            this.removeTextureFromObject(child);
         })
+    }
+
+    findInteractiveParent(object) {
+        if (object.interactive) {
+            return object
+        } else {
+            if (object.parent) {
+                return this.findInteractiveParent(object.parent)
+            } else {
+                return null
+            }
+        }
     }
 }
 

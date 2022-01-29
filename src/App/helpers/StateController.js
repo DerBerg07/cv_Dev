@@ -17,6 +17,9 @@ class StateController {
             case 'work_experience':
                 this.setWorkExperienceState();
                 break
+            case 'hard_skills':
+                this.setStateHardSkills();
+                break
         }
 
         switch (prevState) {
@@ -31,6 +34,9 @@ class StateController {
                 break
             case 'work_experience':
                 this.endWorkExperienceState();
+                break
+            case 'hard_skills':
+                this.endStateHardSkills();
                 break
         }
     }
@@ -82,6 +88,19 @@ class StateController {
         await app.ui.endWorkExperienceState();
         await app.scene.endWorkExperienceState();
         await app.camera.endWorkExperienceState();
+    }
+
+
+    async setStateHardSkills(){
+        await app.ui.setStateHardSkills();
+        await app.scene.setStateHardSkills();
+        await app.camera.setStateHardSkills();
+    }
+
+    async endStateHardSkills(){
+        await app.ui.endStateHardSkills();
+        await app.scene.endStateHardSkills();
+        await app.camera.endStateHardSkills();
     }
 }
 
