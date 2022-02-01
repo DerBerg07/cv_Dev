@@ -212,7 +212,7 @@ class SceneContent extends THREE.Scene {
         floppy.triggerable = true;
         floppy.onMouseClick = () => {
             const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent('wow'));
+            element.setAttribute('href', 'docs/CV_OLEH_HORA.pdf');
             element.setAttribute('download', 'docs/CV_OLEH_HORA.pdf');
             element.style.display = 'none';
             document.body.appendChild(element);
