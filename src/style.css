@@ -350,3 +350,19 @@ body {
         transform: translate(-50%, -50%) scale(1.1);
     }
 }
+
+.rotate{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10vmin;
+    text-align: center;
+    padding: 2vmin;
+    overflow: hidden;
+}

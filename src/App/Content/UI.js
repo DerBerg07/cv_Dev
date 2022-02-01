@@ -10,6 +10,7 @@ const TEXT = {
     WORK_EXPERIENCE: 'WORK EXPERIENCE',
     HARD_SKILLS: 'HARD SKILLS',
     CONTACTS: 'REACH ME AT:',
+    ROTATE: 'ROTATE YOUR DEVICE FOR BETTER EXPERIENCE)'
 };
 
 const EDUCATION_TITLES = [
@@ -23,7 +24,7 @@ const EDUCATION_TITLES = [
     {
         institution: "School",
         mark: "with deep learning of foreign languages",
-        period: "2006 - 2016",
+        period: "2005 - 2016",
     }
 ];
 
@@ -75,7 +76,7 @@ const LINKS = {
         link: 'https://t.me/derBerg'
     },
     Phone: {
-        value: '+(380)935586283',
+        value: '+(380) 935586283',
         link: 'tel:+380935586283'
     }
 };
@@ -93,6 +94,9 @@ class UI {
         this.contactsContent = this.createContactsContent();
         this.hardSkillsButton = this.createGoToHardSkillsButton();
         this.workExperienceButton = this.createGoToWorkExperiencesButton();
+        this.rotateDeviceScreen = this.createRotateScreen();
+
+        this.addRotationListener();
     }
 
     getUiContainer() {
@@ -473,6 +477,38 @@ class UI {
         object.hideInfo = () => {
             htmlElement.classList.add('element-info-hidden');
         }
+    };
+
+    createRotateScreen(){
+        const screen = document.createElement('div');
+        screen.classList.add('rotate');
+        const rotateText = document.createElement('p');
+        rotateText.classList.add('text')
+        rotateText.innerHTML = TEXT.ROTATE;
+        screen.appendChild(rotateText)
+        this.uiContainer.appendChild(screen);
+        return screen
+    }
+
+    showRotate(){
+        this.rotateDeviceScreen.classList.add('element-info-hidden');
+    }
+
+    hideRotate(){
+        this.rotateDeviceScreen.classList.remove('element-info-hidden');
+    }
+
+    addRotationListener(){
+        window.addEventListener('resize', this.onOrientationChange, true);
+        this.onOrientationChange();
+    }
+
+    onOrientationChange=()=>{
+       if(window.innerHeight < window.innerWidth){
+           this.showRotate()
+       }else {
+           this.hideRotate()
+       }
     };
 
     //STATE
