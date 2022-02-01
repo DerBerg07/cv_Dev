@@ -3,11 +3,19 @@
 * {
     margin: 0;
     padding: 0;
+    cursor: default;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html,
 body {
     overflow: hidden;
+}
+
+.cursor_pointer{
+    cursor: pointer;
 }
 
 .webgl {
@@ -74,6 +82,11 @@ body {
     top: 3%;
 }
 
+#content-banner{
+    font-size: 8vmin !important;
+    top: 15%
+}
+
 .background-banner-label {
     padding: 0 1vmin 0 1vmin;
 }
@@ -129,9 +142,6 @@ body {
     transform: translate(-50%, -50%);
     overflow: hidden;
     padding-top: 10vmin;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
 }
 
 .content-education-hidden {
@@ -174,9 +184,6 @@ body {
     overflow: hidden;
     transform: translate(-50%, -50%);
     transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     background-color: #363131;
     padding: 2vmin;
 }
@@ -188,9 +195,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     padding: 1vmin;
     color: #ffffff;
     /*text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;*/
@@ -205,26 +209,21 @@ body {
     align-items: center;
     /*background-color: gray;*/
     /*border: solid 1vmin #403e36;*/
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     padding: 1vmin;
 }
 
 .element-info .company_tasks {
     width: 50vw;
     font-size: 3vmin;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     padding: 1vmin;
     color: #cbc5b6;
 }
 
 .element-info-hidden {
-    width: 0;
+    width: 0 !important;
     border: none !important;
-    padding: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 #hard_skills-button {
@@ -295,4 +294,59 @@ body {
     border: darkgray 0.5vmin solid;
     background-color: #929292;
     transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.contacts{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    width: 70vmin;
+    height: 80vmin;
+    background-color: #797979;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20vmin;
+    overflow: hidden;
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.contact{
+    display: flex;
+    width: 70vmin;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 2vmin;
+    font-size: 3vmin;
+    font-weight: 600;
+    color: #403e36;
+    padding-left: 10vmin;
+    overflow: hidden;
+}
+
+.contact p{
+   width: 30%;
+}
+
+.contact a{
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+.switcher_button{
+    animation-duration: 0.5s;
+    animation-name: changescale;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes changescale {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
 }

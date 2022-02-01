@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Tween from "./Tween";
+import Tween from "../helpers/Tween";
 import {Box3Helper, Vector3} from "three";
 import {positionViewDirection, vec3} from "three/examples/jsm/renderers/nodes/ShaderNode";
 
@@ -9,7 +9,8 @@ const TEXT = {
     EDUCATION: 'EDUCATION',
     WORK_EXPERIENCE: 'WORK EXPERIENCE',
     HARD_SKILLS: 'HARD SKILLS',
-}
+    CONTACTS: 'REACH ME AT:',
+};
 
 const EDUCATION_TITLES = [
     {
@@ -24,7 +25,7 @@ const EDUCATION_TITLES = [
         mark: "with deep learning of foreign languages",
         period: "2006 - 2016",
     }
-]
+];
 
 const WORK_EXPERIENCE_TEXT = {
     TROPHIES: {
@@ -58,7 +59,26 @@ const WORK_EXPERIENCE_TEXT = {
                 '- Support and bug fixes on project.',
         }
     }
-}
+};
+
+const LINKS = {
+    Linkedin : {
+        value: 'oleg.gora',
+        link: 'https://www.linkedin.com/in/oleg-gora-1a87ba19b'
+    },
+    Mail: {
+        value: 'oleh.hora.work@gmail.com',
+        link: 'mailto:oleh.hora.work@gmail.com'
+    },
+    Telegram:{
+        value: '@derBerg',
+        link: 'https://t.me/derBerg'
+    },
+    Phone: {
+        value: '+(380)935586283',
+        link: 'tel:+380935586283'
+    }
+};
 
 class UI {
     constructor() {
@@ -67,8 +87,10 @@ class UI {
         this.nameBanner = this.createNameBanner();
         this.educationBanner = this.createEducationBanner();
         this.workExperienceBanner = this.createWorkExperienceBanner();
+        this.contactsBanner = this.createContactsBanner();
         this.backButton = this.createBackButton();
-        this.educationContent = this.createEducationContent()
+        this.educationContent = this.createEducationContent();
+        this.contactsContent = this.createContactsContent();
         this.hardSkillsButton = this.createGoToHardSkillsButton();
         this.workExperienceButton = this.createGoToWorkExperiencesButton();
     }
@@ -91,20 +113,20 @@ class UI {
         tempPoint1.position.copy(min);
         tempPoint2.position.copy(max);
 
-        app.scene.add(tempPoint1).add(tempPoint2)
+        app.scene.add(tempPoint1).add(tempPoint2);
         mesh.attach(tempPoint2);
         mesh.attach(tempPoint1);
         mesh.rotation.set(prevRotation.x, prevRotation.y, prevRotation.z);
 
-        const c1Wp = tempPoint1.getWorldPosition(new THREE.Vector3())
-        const c2Wp = tempPoint2.getWorldPosition(new THREE.Vector3())
+        const c1Wp = tempPoint1.getWorldPosition(new THREE.Vector3());
+        const c2Wp = tempPoint2.getWorldPosition(new THREE.Vector3());
 
 
         const minPos = this.getPointOnScreen(c1Wp);
         const maxPos = this.getPointOnScreen(c2Wp);
 
         const width = Math.abs(maxPos.x - minPos.x);
-        const height = Math.abs(maxPos.y - minPos.y)
+        const height = Math.abs(maxPos.y - minPos.y);
 
         const x = Math.min(minPos.x, maxPos.x) + width / 2;
         const y = Math.min(minPos.y, maxPos.y) + height / 2;
@@ -115,8 +137,8 @@ class UI {
     getPointOnScreen(vector) {
         const projection = new Vector3().copy(vector);
         projection.project(app.camera);
-        const x = this.getPointXOnScreen(projection.x)
-        const y = this.getPointYOnScreen(projection.y)
+        const x = this.getPointXOnScreen(projection.x);
+        const y = this.getPointYOnScreen(projection.y);
         return {x, y}
     }
 
@@ -142,55 +164,69 @@ class UI {
         loadingContainer.classList.add('loading');
 
         const loadingText = document.createElement('p');
-        loadingText.classList.add('text')
-        loadingText.innerHTML = TEXT.LOADING
+        loadingText.classList.add('text');
+        loadingText.innerHTML = TEXT.LOADING;
         loadingContainer.appendChild(loadingText);
-        this.hide(loadingContainer)
+        this.hide(loadingContainer);
 
-        this.uiContainer.appendChild(loadingContainer)
+        this.uiContainer.appendChild(loadingContainer);
         return loadingContainer
     }
 
     createNameBanner() {
         const nameBannerWrapper = document.createElement('div');
-        nameBannerWrapper.classList.add('banner')
+        nameBannerWrapper.classList.add('banner');
         nameBannerWrapper.id = 'name-banner';
         this.hideBanner(nameBannerWrapper);
         const nameBanner = document.createElement('p');
-        nameBannerWrapper.appendChild(nameBanner)
-        nameBanner.classList.add('text')
+        nameBannerWrapper.appendChild(nameBanner);
+        nameBanner.classList.add('text');
         nameBanner.innerHTML = TEXT.NAME;
 
-        this.uiContainer.appendChild(nameBannerWrapper)
+        this.uiContainer.appendChild(nameBannerWrapper);
         return nameBannerWrapper
     }
 
     createEducationBanner() {
         const diplomaBannerWrapper = document.createElement('div');
-        diplomaBannerWrapper.classList.add('banner')
+        diplomaBannerWrapper.classList.add('banner');
         diplomaBannerWrapper.id = 'diploma-banner';
         this.hideBanner(diplomaBannerWrapper);
         const diplomaBanner = document.createElement('p');
         diplomaBannerWrapper.appendChild(diplomaBanner);
-        diplomaBanner.classList.add('text')
-        diplomaBanner.classList.add('background-banner-label')
+        diplomaBanner.classList.add('text');
+        diplomaBanner.classList.add('background-banner-label');
         diplomaBanner.innerHTML = TEXT.EDUCATION;
-        this.uiContainer.appendChild(diplomaBannerWrapper)
+        this.uiContainer.appendChild(diplomaBannerWrapper);
         return diplomaBannerWrapper
     }
 
     createWorkExperienceBanner() {
         const workExperienceBannerWrapper = document.createElement('div');
-        workExperienceBannerWrapper.classList.add('banner')
+        workExperienceBannerWrapper.classList.add('banner');
         workExperienceBannerWrapper.id = 'work_experience-banner';
         this.hideBanner(workExperienceBannerWrapper);
         const workExperienceBanner = document.createElement('p');
         workExperienceBannerWrapper.appendChild(workExperienceBanner);
-        workExperienceBanner.classList.add('text')
-        workExperienceBanner.classList.add('background-banner-label')
+        workExperienceBanner.classList.add('text');
+        workExperienceBanner.classList.add('background-banner-label');
         workExperienceBanner.innerHTML = TEXT.WORK_EXPERIENCE;
-        this.uiContainer.appendChild(workExperienceBannerWrapper)
+        this.uiContainer.appendChild(workExperienceBannerWrapper);
         return workExperienceBannerWrapper
+    }
+
+    createContactsBanner() {
+        const contactsBannerWrapper = document.createElement('div');
+        contactsBannerWrapper.classList.add('banner');
+        contactsBannerWrapper.id = 'content-banner';
+        this.hideBanner(contactsBannerWrapper);
+        const contactsBanner = document.createElement('p');
+        contactsBannerWrapper.appendChild(contactsBanner);
+        contactsBanner.classList.add('text');
+        contactsBanner.classList.add('background-banner-label');
+        contactsBanner.innerHTML = TEXT.CONTACTS;
+        this.uiContainer.appendChild(contactsBannerWrapper);
+        return contactsBannerWrapper
     }
 
     hideBanner(banner) {
@@ -206,14 +242,14 @@ class UI {
         const backButton = document.createElement('div');
         backButton.id = 'back-button';
         const backImage = document.createElement('img');
-        backImage.classList.add('back-image')
+        backImage.classList.add('back-image');
         backImage.src = 'images/backArrow.png';
         backButton.appendChild(backImage);
         backButton.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
             app.setState('idle');
-        })
+        });
         this.uiContainer.appendChild(backButton);
         backButton.classList.add('hidden_back-button');
         return backButton;
@@ -235,8 +271,8 @@ class UI {
         const titles = this.createEducationTitles();
         titles.forEach((title) => {
             educationContent.appendChild(title);
-        })
-        this.uiContainer.appendChild(educationContent)
+        });
+        this.uiContainer.appendChild(educationContent);
         return educationContent;
     }
 
@@ -245,7 +281,7 @@ class UI {
         EDUCATION_TITLES.forEach((titleData) => {
             const title = document.createElement("div");
             title.classList.add('title-education');
-            title.classList.add('text')
+            title.classList.add('text');
             if (titleData.institution) {
                 const institution = document.createElement('h1');
                 institution.innerHTML = titleData.institution;
@@ -270,7 +306,7 @@ class UI {
                 title.appendChild(degree);
             }
             titles.push(title)
-        })
+        });
 
         return titles
     }
@@ -295,12 +331,13 @@ class UI {
         hardSkillsButton.classList.add('hidden_hard_skills-button');
         hardSkillsButton.id = 'hard_skills-button';
         hardSkillsButton.classList.add('text');
-        hardSkillsButton.innerHTML = TEXT.HARD_SKILLS
+        hardSkillsButton.classList.add('switcher_button');
+        hardSkillsButton.innerHTML = TEXT.HARD_SKILLS;
         hardSkillsButton.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
             app.setState('hard_skills');
-        })
+        });
         this.uiContainer.appendChild(hardSkillsButton);
         return hardSkillsButton;
     }
@@ -318,12 +355,13 @@ class UI {
         workExperienceButton.classList.add('hidden_work_experience-button');
         workExperienceButton.id = 'work_experience-button';
         workExperienceButton.classList.add('text');
-        workExperienceButton.innerHTML = TEXT.WORK_EXPERIENCE
+        workExperienceButton.classList.add('switcher_button');
+        workExperienceButton.innerHTML = TEXT.WORK_EXPERIENCE;
         workExperienceButton.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
             app.setState('work_experience');
-        })
+        });
         this.uiContainer.appendChild(workExperienceButton);
         return workExperienceButton;
     }
@@ -347,21 +385,21 @@ class UI {
         companyName.classList.add('company_name');
         companyName.classList.add('text');
         companyName.innerHTML = this.prepareTextForInnerHtml(name);
-        infoElement.appendChild(companyName)
+        infoElement.appendChild(companyName);
 
         const companyPeriod = document.createElement('p');
         companyPeriod.classList.add('company_period');
         companyPeriod.classList.add('text');
         companyPeriod.innerHTML = this.prepareTextForInnerHtml(WORK_EXPERIENCE_TEXT.TROPHIES[name].period);
-        infoElement.appendChild(companyPeriod)
+        infoElement.appendChild(companyPeriod);
 
         const companyTasks = document.createElement('p');
         companyTasks.classList.add('company_tasks');
         companyTasks.classList.add('text');
         companyTasks.innerHTML = this.prepareTextForInnerHtml(WORK_EXPERIENCE_TEXT.TROPHIES[name].tasks);
-        infoElement.appendChild(companyTasks)
+        infoElement.appendChild(companyTasks);
 
-        const pivotCorrection = new Vector3(0, 0, 0)
+        const pivotCorrection = new Vector3(0, 0, 0);
         this.addHtmlLabelToObject(trophyObject, infoElement, pivotCorrection);
     }
 
@@ -374,25 +412,39 @@ class UI {
         label.innerHTML = name;
         this.uiContainer.appendChild(label);
         return label;
-    }
+    };
 
-    prepareTextForInnerHtml(string){
-        return string.replaceAll('\n', '<br>')
-    }
+    //CONTACTS
+    createContactsContent(){
+        const container = document.createElement('div');
+        container.classList.add('contacts');
+        container.classList.add('element-info-hidden');
 
-    addHtmlLabelToObject = (object, htmlElement, pivotCorrection = new Vector3()) => {
-        object.showInfo = () => {
-            const objPosition = object.getWorldPosition(new Vector3())
-            objPosition.add(pivotCorrection)
-            const screePosition = this.getPointOnScreen(objPosition);
-            htmlElement.style.top = screePosition.y + 'px';
-            htmlElement.style.left = screePosition.x + 'px';
-            htmlElement.classList.remove('element-info-hidden');
+        for(let link in LINKS){
+            const linkObj = LINKS[link];
+            const contact = this.createContact(link, linkObj.value, linkObj.link);
+            container.appendChild(contact)
         }
 
-        object.hideInfo = () => {
-            htmlElement.classList.add('element-info-hidden');
-        }
+        this.uiContainer.appendChild(container);
+        return container;
+    }
+
+    createContact(name, value, link){
+        const element = document.createElement('p');
+        element.classList.add('contact');
+        element.classList.add('text');
+        const valueHtml = link ? `<a href="${link}">${value}</a>` : value;
+        element.innerHTML = `<p>${name}:</p> ${valueHtml}`;
+        return element
+    }
+
+    hideContactsContent(){
+        this.contactsContent.classList.add('element-info-hidden');
+    }
+
+    showContactsContent(){
+        this.contactsContent.classList.remove('element-info-hidden');
     }
 
     //HELPERS
@@ -403,6 +455,25 @@ class UI {
         })(navigator.userAgent || navigator.vendor || window.opera);
         return check;
     }
+
+    prepareTextForInnerHtml(string){
+        return string.replaceAll('\n', '<br>')
+    }
+
+    addHtmlLabelToObject = (object, htmlElement, pivotCorrection = new Vector3()) => {
+        object.showInfo = () => {
+            const objPosition = object.getWorldPosition(new Vector3());
+            objPosition.add(pivotCorrection);
+            const screePosition = this.getPointOnScreen(objPosition);
+            htmlElement.style.top = screePosition.y + 'px';
+            htmlElement.style.left = screePosition.x + 'px';
+            htmlElement.classList.remove('element-info-hidden');
+        };
+
+        object.hideInfo = () => {
+            htmlElement.classList.add('element-info-hidden');
+        }
+    };
 
     //STATE
     setLoadingState() {
@@ -441,7 +512,7 @@ class UI {
 
     setEducationState() {
         return new Promise(resolve => {
-            this.showBanner(this.educationBanner)
+            this.showBanner(this.educationBanner);
             this.showEducationContent();
             resolve();
         })
@@ -449,7 +520,7 @@ class UI {
 
     endEducationState() {
         return new Promise(resolve => {
-            this.hideBanner(this.educationBanner)
+            this.hideBanner(this.educationBanner);
             this.hideEducationContent();
             resolve();
         })
@@ -459,7 +530,7 @@ class UI {
     setWorkExperienceState() {
         return new Promise(resolve => {
 
-            this.showBanner(this.workExperienceBanner)
+            this.showBanner(this.workExperienceBanner);
             resolve();
         })
     }
@@ -481,6 +552,22 @@ class UI {
     endStateHardSkills(){
         return new Promise((resolve, reject) => {
             this.hideWorkExperienceButton();
+            resolve()
+        })
+    }
+
+    setStateContacts() {
+        return new Promise((resolve, reject) => {
+            this.showBanner(this.contactsBanner)
+            this.showContactsContent();
+            resolve()
+        })
+    }
+
+    endStateContacts() {
+        return new Promise((resolve, reject) => {
+            this.hideBanner(this.contactsBanner)
+            this.hideContactsContent();
             resolve()
         })
     }

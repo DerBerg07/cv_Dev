@@ -7,37 +7,41 @@ class StateController {
         switch (nextState) {
             case 'loading':
                 this.setLoadingState();
-                break
+                break;
             case 'idle':
                 this.setIdleState();
-                break
+                break;
             case 'education':
                 this.setEducationState();
-                break
+                break;
             case 'work_experience':
                 this.setWorkExperienceState();
-                break
+                break;
             case 'hard_skills':
                 this.setStateHardSkills();
-                break
+                break;
+            case 'contacts':
+                this.setStateContacts();
         }
 
         switch (prevState) {
             case 'loading':
                 this.endLoadingState();
-                break
+                break;
             case 'idle':
                 this.endIdleState();
-                break
+                break;
             case 'education':
                 this.endEducationState();
-                break
+                break;
             case 'work_experience':
                 this.endWorkExperienceState();
-                break
+                break;
             case 'hard_skills':
                 this.endStateHardSkills();
-                break
+                break;
+            case 'contacts':
+                this.endStateContacts();
         }
     }
 
@@ -91,16 +95,28 @@ class StateController {
     }
 
 
-    async setStateHardSkills(){
+    async setStateHardSkills() {
         await app.ui.setStateHardSkills();
         await app.scene.setStateHardSkills();
         await app.camera.setStateHardSkills();
     }
 
-    async endStateHardSkills(){
+    async endStateHardSkills() {
         await app.ui.endStateHardSkills();
         await app.scene.endStateHardSkills();
         await app.camera.endStateHardSkills();
+    }
+
+    async setStateContacts() {
+        app.ui.setStateContacts();
+        app.scene.setStateContacts();
+        app.camera.setStateContacts();
+    }
+
+    async endStateContacts() {
+        app.ui.endStateContacts();
+        app.scene.endStateContacts();
+        app.camera.endStateContacts();
     }
 }
 

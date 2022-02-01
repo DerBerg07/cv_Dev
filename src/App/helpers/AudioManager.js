@@ -10,7 +10,7 @@ class AudioManager {
             html5: true,
             src: ['audio/music.mp3'],
             loop: true,
-            volume: 0.5,
+            volume: 0.20,
             autoplay: true,
         })
     }
@@ -45,8 +45,6 @@ class AudioManager {
     stopMusic(){
         this.sound.stop();
     }
-
-
 }
 
 export {AudioManager}

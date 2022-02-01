@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import Tween from "./Tween";
+import Tween from "../helpers/Tween";
 import {Vector3} from "three";
 
 const CAMERA_POSITIONS = {
@@ -22,8 +22,13 @@ const CAMERA_POSITIONS = {
         x: -0.54,
         y: 1,
         z: -0.94
+    },
+    contacts: {
+        x: -1.16,
+        y: 0.78,
+        z: 0.76
     }
-}
+};
 
 const IDLE_CAMERA_LOOK = new THREE.Vector3(0, 0.7, 0)
 
@@ -41,23 +46,23 @@ class Camera extends THREE.PerspectiveCamera {
     }
 
     setDefaultPosition() {
-        gui.addFolder('camera')
+        gui.addFolder('camera');
         gui.add(this.position, 'x', -10, 10, 0.02).onChange(() => {
             this.setLook();
-        })
+        });
         gui.add(this.position, 'y', 0, 15, 0.02).onChange(() => {
             this.setLook();
-        })
+        });
         gui.add(this.position, 'z', -1, 10, 0.02).onChange(() => {
             this.setLook();
-        })
+        });
 
         this.setLook();
     }
 
     setLook = () => {
         this.lookAt(this.lookVector)
-    }
+    };
 
     setCurrentLookVector(vector = new THREE.Vector3(0, 0, 0,)) {
         this.lookVector = new Vector3().copy(vector);
@@ -83,7 +88,7 @@ class Camera extends THREE.PerspectiveCamera {
                 .to(CAMERA_POSITIONS.idle, animationDuration, Tween.Ease.cubicOut)
                 .addEventListener('change', () => {
                     this.setLook()
-                })
+                });
 
             Tween.get(this.lookVector, {override: true})
                 .to(IDLE_CAMERA_LOOK, animationDuration, Tween.Ease.cubicOut)
@@ -110,13 +115,13 @@ class Camera extends THREE.PerspectiveCamera {
                 x: this.lookVector.x,
                 y: this.lookVector.y,
                 z: this.lookVector.z,
-            }
+            };
 
             const targetLook = {
                 x: diploma.position.x,
                 y: diploma.position.y,
                 z: diploma.position.z,
-            }
+            };
 
             Tween.get(currentLook, {override: true})
                 .to(targetLook, animationDuration, Tween.Ease.cubicOut)
@@ -159,7 +164,7 @@ class Camera extends THREE.PerspectiveCamera {
     endWorkExperienceState() {
     }
 
-    setStateHardSkills(){
+    setStateHardSkills() {
         return new Promise((resolve, reject) => {
             const animationDuration = 1;
             const shelf = this.scene.getObjectByName('Shelf');
@@ -180,8 +185,39 @@ class Camera extends THREE.PerspectiveCamera {
         })
     }
 
-    endStateHardSkills(){
-        return new Promise((resolve, reject) => {resolve()})
+    endStateHardSkills() {
+        return new Promise((resolve) => {
+
+            resolve()
+        })
+    }
+
+    setStateContacts() {
+        return new Promise((resolve) => {
+            const animationDuration = 1;
+            const backpack = this.scene.getObjectByName('Backpack');
+            Tween.get(this.position, {override: true})
+                .to(CAMERA_POSITIONS.contacts, animationDuration, Tween.Ease.cubicOut)
+
+            const targetLook = new Vector3().copy(backpack.position);
+
+            Tween.get(this.lookVector, {override: true})
+                .to(targetLook, animationDuration, Tween.Ease.cubicOut)
+                .call(() => {
+                    resolve();
+                })
+                .addEventListener('change', () => {
+                    this.setLook();
+                });
+            resolve()
+        })
+    }
+
+    endStateContacts() {
+        return new Promise((resolve, reject) => {
+
+            resolve()
+        })
     }
 }
 

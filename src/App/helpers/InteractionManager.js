@@ -9,7 +9,7 @@ class InteractionManager {
         this.pointer = {
             x: null,
             y: null
-        }
+        };
 
         this.targerObject = null;
 
@@ -23,8 +23,10 @@ class InteractionManager {
     };
 
     addDomEventListeners() {
-        document.addEventListener('mousemove', this.onMouseMove)
-        document.addEventListener('click', this.onMouseClick)
+        document.getElementById('ui').addEventListener('mousemove', this.onMouseMove);
+        document.getElementById('ui').addEventListener('click', (event)=>{
+            this.onMouseClick();
+        })
     }
 
     onMouseMove = (event) => {
@@ -38,23 +40,25 @@ class InteractionManager {
             if (this.targerObject !== interactionObject) {
                 this.onHoverOut(this.targerObject);
                 this.targerObject = interactionObject;
-                this.onHoverIn(this.targerObject)
+                this.onHoverIn(this.targerObject);
             }
         } else {
             this.onHoverOut(this.targerObject);
+            this.setMouseDefault();
             this.targerObject = null;
         }
-    }
+    };
 
     onMouseClick = () => {
         if (this.targerObject) {
             if (this.targerObject.interactive && this.targerObject.onMouseClick) {
                 this.targerObject.onMouseClick();
-            } else if (this.targerObject.parent.interactive && this.targerObject.parent.onMouseClick) {
-                this.targerObject.parent.onMouseClick();
+                if(!this.targerObject.triggerable){
+                    this.removeTextureFromObject(this.targerObject);
+                }
             }
         }
-    }
+    };
 
     onHoverIn(object) {
         if (!object) {
@@ -64,12 +68,16 @@ class InteractionManager {
         if (object.onHoverIn) {
             object.onHoverIn();
         }
+        if(object.onMouseClick){
+            this.setMousePointer();
+        }
     }
 
     onHoverOut(object) {
         if (!object) {
             return
         }
+        this.setMouseDefault();
         this.removeTextureFromObject(object);
         if (object.onHoverOut) {
             object.onHoverOut();
@@ -102,6 +110,15 @@ class InteractionManager {
             }
         }
     }
+
+    setMousePointer(){
+        document.getElementById('ui').classList.add('cursor_pointer');
+    }
+
+    setMouseDefault(){
+        document.getElementById('ui').classList.remove('cursor_pointer');
+    }
+
 }
 
 export {InteractionManager}

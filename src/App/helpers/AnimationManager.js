@@ -2,15 +2,14 @@ import * as THREE from "three";
 
 class AnimationManager {
     constructor() {
-        this.animations = {}
+        this.animations = {};
         this.mixerAnimations = [];
     }
 
     addAnimations(model){
         model.animations.forEach(animation =>{
             const animationMixer = new THREE.AnimationMixer(model.scene);
-            const action = animationMixer.clipAction(animation);
-            this.animations[animation.name] = action;
+            this.animations[animation.name] = animationMixer.clipAction(animation);
             this.mixerAnimations.push(animationMixer);
         })
     }

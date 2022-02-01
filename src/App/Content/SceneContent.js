@@ -9,10 +9,10 @@ import {AnimationManager} from "../helpers/AnimationManager";
 
 class SceneContent extends THREE.Scene {
     constructor() {
-        super()
+        super();
         this.interactionManager = null;
         this.shelfManager = null;
-        this.background = '#ffffff'
+        this.background = '#ffffff';
         this.models = {};
         this.mashes = [];
         this.interactionObjects = [];
@@ -40,7 +40,7 @@ class SceneContent extends THREE.Scene {
                     node.defaultScale = new Vector3().copy(node.scale);
                     this.mashes.push(node);
                 }
-            })
+            });
             this.animationManager.addAnimations(model);
             this.models[modelName] = model;
             this.add(model.scene);
@@ -61,13 +61,13 @@ class SceneContent extends THREE.Scene {
                 x: mesh.scale.x,
                 y: mesh.scale.y,
                 z: mesh.scale.z,
-            }
+            };
 
             const targetParams = {
                 x: mesh.defaultScale.x,
                 y: mesh.defaultScale.y,
                 z: mesh.defaultScale.z,
-            }
+            };
 
             Tween.get(curParams)
                 .to(targetParams, 0.7, Tween.Ease.cubicOut)
@@ -82,8 +82,8 @@ class SceneContent extends THREE.Scene {
     }
 
     addBasicLight() {
-        const ambientLight = new THREE.AmbientLight('#929292', 0.7)
-        this.add(ambientLight)
+        const ambientLight = new THREE.AmbientLight('#929292', 0.7);
+        this.add(ambientLight);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
         directionalLight.shadow.camera.left = -2;
@@ -94,8 +94,8 @@ class SceneContent extends THREE.Scene {
         directionalLight.shadow.mapSize.height = 512;
         directionalLight.castShadow = true;
         directionalLight.shadow.bias = -0.00005;
-        directionalLight.position.set(-3, 10, 3)
-        this.add(directionalLight)
+        directionalLight.position.set(-3, 10, 3);
+        this.add(directionalLight);
 
         const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.2);
         directionalLight2.shadow.camera.left = -2;
@@ -106,11 +106,11 @@ class SceneContent extends THREE.Scene {
         directionalLight2.shadow.mapSize.height = 512;
         directionalLight2.castShadow = true;
         directionalLight2.shadow.bias = -0.00005;
-        directionalLight2.position.set(-12, 3, -1.15)
+        directionalLight2.position.set(-12, 3, -1.15);
         this.add(directionalLight2);
 
         //debug
-        gui.addFolder('dirLight')
+        gui.addFolder('dirLight');
         gui.add(directionalLight2.position, 'x', -15, 15, 0.02);
         gui.add(directionalLight2.position, 'y', 0, 15, 0.02);
         gui.add(directionalLight2.position, 'z', -15, 15, 0.02);
@@ -118,7 +118,7 @@ class SceneContent extends THREE.Scene {
 
     addLampLight() {
         const lampLight = new THREE.PointLight('#ff8c00', 10, 0.8, Math.PI / 2);
-        lampLight.position.set(0.2, 1.38, 0.34)
+        lampLight.position.set(0.2, 1.38, 0.34);
         lampLight.shadow.camera.left = -1.5;
         lampLight.shadow.camera.right = 1.5;
         lampLight.shadow.camera.top = 1.5;
@@ -139,10 +139,10 @@ class SceneContent extends THREE.Scene {
                 metalness: 0,
                 roughness: 0.5
             })
-        )
+        );
         floor.name = 'Floor';
-        floor.receiveShadow = true
-        floor.rotation.x = -Math.PI * 0.5
+        floor.receiveShadow = true;
+        floor.rotation.x = -Math.PI * 0.5;
         this.add(floor)
     }
 
@@ -155,6 +155,9 @@ class SceneContent extends THREE.Scene {
         this.diplomaAddControls();
         this.addShelfControls();
         this.addAudioPlayerControls();
+        this.addCameraControls();
+        this.addFloppyControls();
+        this.addBackpackControls();
     }
 
     setInteractionOfObjects(interactive = true) {
@@ -170,7 +173,7 @@ class SceneContent extends THREE.Scene {
         diploma.interactive = true;
         diploma.onMouseClick = () => {
             app.setState('education')
-        }
+        };
         this.interactionObjects.push(diploma);
     }
 
@@ -179,17 +182,54 @@ class SceneContent extends THREE.Scene {
         shelf.interactive = true;
         shelf.onMouseClick = () => {
             app.setState('work_experience')
-        }
+        };
         this.interactionObjects.push(shelf);
     }
 
     addAudioPlayerControls() {
         const audioplayer = this.getObjectByName('Audioplayer');
         audioplayer.interactive = true;
+        audioplayer.triggerable = true;
         audioplayer.onMouseClick = () => {
             this.animationManager.trigger(this.audioManager.triggerAudio());
-        }
+        };
         this.interactionObjects.push(audioplayer);
+    }
+
+    addCameraControls(){
+        const camera = this.getObjectByName('PhotoCamera');
+        camera.interactive = true;
+        camera.triggerable = true;
+        camera.onMouseClick = () => {
+           window.open('https://www.instagram.com/numb_squirrel/')
+        };
+        this.interactionObjects.push(camera);
+    }
+
+    addFloppyControls(){
+        const floppy = this.getObjectByName('Floppy');
+        floppy.interactive = true;
+        floppy.triggerable = true;
+        floppy.onMouseClick = () => {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent('wow'));
+            element.setAttribute('download', 'docs/CV_OLEH_HORA.pdf');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        };
+        this.interactionObjects.push(floppy);
+    }
+
+    addBackpackControls(){
+        const backpack = this.getObjectByName('Backpack');
+        backpack.interactive = true;
+        backpack.triggerable = true;
+        backpack.onMouseClick = () => {
+            app.setState('contacts')
+        };
+        this.interactionObjects.push(backpack);
     }
 
     setLoadingState() {
@@ -201,7 +241,7 @@ class SceneContent extends THREE.Scene {
                 app.renderer.shadowMap.autoUpdate = false;
                 this.mashes.forEach(mesh => {
                     mesh.scale.set(0, 0, 0)
-                })
+                });
                 this.scaleBackMashes();
                 resolve();
             })
@@ -226,23 +266,23 @@ class SceneContent extends THREE.Scene {
                 .call(() => {
                     const cameraPosition = new Vector3().copy(app.camera.position);
                     const cameraDirectionVector = app.camera.getWorldDirection(new Vector3());
-                    cameraPosition.addScaledVector(cameraDirectionVector, 0.4)
+                    cameraPosition.addScaledVector(cameraDirectionVector, 0.4);
                     Tween.get(diploma.position)
                         .to(cameraPosition, animationDuration)
                         .call(() => {
                             resolve();
-                        })
+                        });
 
                     const lookAtParams = {
                         x: diploma.position.x,
                         y: diploma.position.y - 1,
                         z: -diploma.position.z
-                    }
+                    };
                     const lookAtTargetParams = {
                         x: app.camera.position.x,
                         y: app.camera.position.y,
                         z: app.camera.position.z,
-                    }
+                    };
                     Tween.get(lookAtParams).to(lookAtTargetParams, animationDuration)
                         .addEventListener('change', () => {
                             diploma.lookAt(...Object.values(lookAtParams))
@@ -255,16 +295,16 @@ class SceneContent extends THREE.Scene {
         return new Promise(resolve => {
             const animationDuration = 0.3;
             const diploma = this.getObjectByName('Diploma');
-            const firstStepPosition = new Vector3().copy(diploma.defaultPosition)
+            const firstStepPosition = new Vector3().copy(diploma.defaultPosition);
             firstStepPosition.z = -firstStepPosition.z;
             Tween.get(diploma.position, {override: true})
                 .to(firstStepPosition, animationDuration)
                 .to(diploma.defaultPosition, animationDuration)
                 .call(() => {
                     resolve();
-                })
+                });
 
-            const targetRotationVector = new Vector3().copy(diploma.defaultRotation)
+            const targetRotationVector = new Vector3().copy(diploma.defaultRotation);
             targetRotationVector.z = -targetRotationVector.z;
 
             Tween.get(diploma.rotation, {override: true})
@@ -290,14 +330,28 @@ class SceneContent extends THREE.Scene {
 
     setStateHardSkills() {
         return new Promise((resolve, reject) => {
-            this.shelfManager.startShelfFrameScene()
+            this.shelfManager.startShelfFrameScene();
             resolve()
         })
     }
 
     endStateHardSkills() {
         return new Promise((resolve, reject) => {
-            this.shelfManager.endShelfFrameScene()
+            this.shelfManager.endShelfFrameScene();
+            resolve()
+        })
+    }
+
+    setStateContacts() {
+        return new Promise((resolve, reject) => {
+
+            resolve()
+        })
+    }
+
+    endStateContacts() {
+        return new Promise((resolve, reject) => {
+
             resolve()
         })
     }
