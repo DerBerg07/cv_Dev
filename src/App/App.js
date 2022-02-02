@@ -31,7 +31,7 @@ class App {
         this.ui = null;
     }
 
-    init() {
+   async init() {
         this.renderer = this.createRenderer();
         this.scene = this.createScene();
         this.camera = this.createCamera();
@@ -40,7 +40,8 @@ class App {
         this.stateController = this.createStateController();
 
         this.addResizeListener();
-        this.loader.loadFiles(this.callLoaderCallback);
+        await this.loader.loadFiles();
+        this.callLoaderCallback(this.loader.models)
         this.startRender();
     };
 

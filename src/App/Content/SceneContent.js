@@ -6,6 +6,8 @@ import {InteractionManager} from "../helpers/InteractionManager";
 import {Shelf} from "./Shelf";
 import {AudioManager} from "../helpers/AudioManager";
 import {AnimationManager} from "../helpers/AnimationManager";
+import {WorldTag} from "./Components/WorldTag";
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry";
 
 class SceneContent extends THREE.Scene {
     constructor() {
@@ -15,9 +17,10 @@ class SceneContent extends THREE.Scene {
         this.background = '#ffffff';
         this.models = {};
         this.mashes = [];
+        this.texts = [];
         this.interactionObjects = [];
         this.audioManager = null;
-        this.animationManager =   this.addAnimation();
+        this.animationManager = this.addAnimation();
     }
 
     init() {
@@ -47,12 +50,12 @@ class SceneContent extends THREE.Scene {
         }
     }
 
-    addAudio(){
+    addAudio() {
         this.audioManager = new AudioManager();
     }
 
-    addAnimation(){
-        return  new AnimationManager();
+    addAnimation() {
+        return new AnimationManager();
     }
 
     scaleBackMashes() {
@@ -160,6 +163,34 @@ class SceneContent extends THREE.Scene {
         this.addBackpackControls();
     }
 
+    createText(text, size, element, positionCorrection = new Vector3(), rotationY = Math.PI * 3 / 2) {
+        const geometry = new TextGeometry(text, {
+            font: app.loader.fonts.roboto,
+            size: size,
+            height: 0.00001
+        });
+        geometry.center();
+        const material = new THREE.MeshStandardMaterial({color: 0x070707});
+        const textMesh = new THREE.Mesh(geometry, material);
+        textMesh.position.copy(element.position);
+        this.texts.push(textMesh);
+        textMesh.rotation.y = rotationY;
+        textMesh.position.add(positionCorrection);
+        return textMesh;
+    }
+
+    hideText() {
+        this.texts.forEach(text => {
+            Tween.get(text.scale).to({x: 0, y: 0, z: 0}, 0.5)
+        })
+    }
+
+    showText() {
+        this.texts.forEach(text => {
+            Tween.get(text.scale).to({x: 1, y: 1, z: 1}, 0.5)
+        })
+    }
+
     setInteractionOfObjects(interactive = true) {
         this.interactionObjects.forEach((object) => {
             object.interactive = interactive;
@@ -174,6 +205,8 @@ class SceneContent extends THREE.Scene {
         diploma.onMouseClick = () => {
             app.setState('education')
         };
+        const diplomaText = this.createText('EDUCATION', 0.05, diploma, new Vector3(-0.15, -0.05, 0));
+        this.add(diplomaText);
         this.interactionObjects.push(diploma);
     }
 
@@ -183,6 +216,14 @@ class SceneContent extends THREE.Scene {
         shelf.onMouseClick = () => {
             app.setState('work_experience')
         };
+        const shelfText = this.createText(
+            'WORK EXPERIENCE',
+            0.1,
+            shelf,
+            new Vector3(0, 1.6, 0),
+            shelf.rotation.y - Math.PI / 2.5
+        );
+        this.add(shelfText);
         this.interactionObjects.push(shelf);
     }
 
@@ -193,20 +234,36 @@ class SceneContent extends THREE.Scene {
         audioplayer.onMouseClick = () => {
             this.animationManager.trigger(this.audioManager.triggerAudio());
         };
+        const audioText = this.createText(
+            'MUSIC',
+            0.07,
+            audioplayer,
+            new Vector3(0, 0.6, 0),
+            audioplayer.rotation.y - Math.PI / 2
+        );
+        this.add(audioText);
         this.interactionObjects.push(audioplayer);
     }
 
-    addCameraControls(){
+    addCameraControls() {
         const camera = this.getObjectByName('PhotoCamera');
         camera.interactive = true;
         camera.triggerable = true;
         camera.onMouseClick = () => {
-           window.open('https://www.instagram.com/numb_squirrel/')
+            window.open('https://www.instagram.com/numb_squirrel/')
         };
+        const cameraText = this.createText(
+            'MY PHOTOS',
+            0.05,
+            camera,
+            new Vector3(-0.1, 0.1, 0.1),
+            camera.rotation.y - Math.PI / 6
+        );
+        this.add(cameraText);
         this.interactionObjects.push(camera);
     }
 
-    addFloppyControls(){
+    addFloppyControls() {
         const floppy = this.getObjectByName('Floppy');
         floppy.interactive = true;
         floppy.triggerable = true;
@@ -219,16 +276,31 @@ class SceneContent extends THREE.Scene {
             element.click();
             document.body.removeChild(element);
         };
+        const floppyText = this.createText(
+            'DOWNLOAD PDF',
+            0.07,
+            floppy,
+            new Vector3(0, 0.15, 0),
+        );
+        this.add(floppyText);
         this.interactionObjects.push(floppy);
     }
 
-    addBackpackControls(){
+    addBackpackControls() {
         const backpack = this.getObjectByName('Backpack');
         backpack.interactive = true;
         backpack.triggerable = true;
         backpack.onMouseClick = () => {
             app.setState('contacts')
         };
+        const backpackText = this.createText(
+            'CONTACTS',
+            0.07,
+            backpack,
+            new Vector3(-0.4, -0.3, -0.5),
+            backpack.rotation.y - Math.PI / 1.35
+        );
+        this.add(backpackText);
         this.interactionObjects.push(backpack);
     }
 
@@ -250,10 +322,12 @@ class SceneContent extends THREE.Scene {
 
     setIdleState() {
         this.setInteractionOfObjects();
+        this.showText();
     }
 
     endIdleState() {
         this.setInteractionOfObjects(false);
+        this.hideText();
     }
 
     setEducationState() {

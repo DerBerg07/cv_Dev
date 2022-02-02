@@ -40,7 +40,7 @@ const WORK_EXPERIENCE_TEXT = {
                 '- Development for mobile devices.'
         },
         'Ejaw': {
-            period: '2029 - 2021 (1 year)',
+            period: '2019 - 2021 (1 year)',
             tasks: 'Create different HTML5 games from scratch as outsource developer\n' +
                 'Technology stack : PIXI.JS, Phaser, ThreeJs, BabylonJs, Typescript\n'+
                 'Usual tasks:\n' +
